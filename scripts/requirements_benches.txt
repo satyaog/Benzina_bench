@@ -1,0 +1,6 @@
+-c contraints_benches.txt
+torchvision==0.5.0
+jug==1.6.9
+# nvidia-dali
+--extra-index-url https://developer.download.nvidia.com/compute/redist
+nvidia-dali-cuda100==0.24.0

@@ -1,0 +1,6 @@
+__pycache__/
+/Benzina/
+/tmp/
+*.jugdata/
+*.out
+*.err
