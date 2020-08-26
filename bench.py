@@ -122,6 +122,10 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
 
     batch_generator = iter(train_loader)
     batches_cnt = args.batches if args.batches else len(train_loader) - 10
+    try:
+        len_loader = len(train_loader)
+    except TypeError:
+        len_loader = "N/A"
 
     # warm-up
     for i in range(10):
@@ -140,7 +144,8 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
 
         if args.gpu is not None:
             images = images.cuda(args.gpu, non_blocking=True)
-        target = target.cuda(args.gpu, non_blocking=True)
+            target = target.cuda(args.gpu, non_blocking=True)
+        target = target.view((-1,))
 
         # compute output
         output = model(images)
@@ -164,7 +169,7 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
                   '({data_time.avg:.3f})\t'
                   'Training time {train_time.val:.3f} '
                   '({train_time.avg:.3f})\t'
-                  .format(epoch, i, len(train_loader), batch_time=batch_time,
+                  .format(epoch, i, len_loader, batch_time=batch_time,
                           data_time=data_time,
                           train_time=train_time))
 
