@@ -146,6 +146,11 @@ DS_TMPDIR=${TMPDIR}/datasets
 which git-annex || load_git_annex; exit_on_error_code
 module_load_bench; exit_on_error_code
 setup_bench_env; exit_on_error_code
+if [ ! -z "$(git diff && datalad diff && datalad diff --staged)" ]
+then
+	$(exit 1); exit_on_error_code "Environment is dirty, Datalad will not run"
+fi
+exit_on_error_code "Failed to check if environment is clean"
 copy_datasets; exit_on_error_code
 
 datalad run scripts/run_benches.sh --ds_dir ${DS_TMPDIR}

@@ -1,5 +1,6 @@
 import argparse
 from collections import namedtuple
+import os
 import random
 import time
 import warnings
@@ -93,8 +94,15 @@ def main_worker(make_dataloader, dataloader_name, args):
                                 momentum=args.momentum,
                                 weight_decay=args.weight_decay)
 
-    with open("measures.csv", 'a') as measures_file:
-        measures_file.write(','.join(Measure._fields) + "\n")
+    if not os.path.exists("measures.csv"):
+        first_line = None
+    else:
+        with open("measures.csv", 'r') as measures_file:
+            first_line = measures_file.readline()
+
+    if first_line != ','.join(Measure._fields) + "\n":
+        with open("measures.csv", 'a') as measures_file:
+            measures_file.write(','.join(Measure._fields) + "\n")
 
     train_loader = make_dataloader(args)
 

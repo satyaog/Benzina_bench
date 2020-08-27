@@ -1,24 +1,13 @@
 data_loader,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
 DALI - nvidia-dali-cuda100==0.24.0,1,False,1234,0,128,100,0.21973642826080322,0.1703183603286743,0.049418067932128905,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision/train
-data_loader,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
 DALI - nvidia-dali-cuda100==0.24.0,1,True,1234,0,128,100,0.22013648271560668,0.17837607860565186,0.04176040410995483,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision/train
-data_loader,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
 DALI - nvidia-dali-cuda100==0.24.0,1,False,1234,0,256,100,0.4299446558952332,0.3788478922843933,0.05109676361083984,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision/train
-data_loader,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
 DALI - nvidia-dali-cuda100==0.24.0,1,True,1234,0,256,100,0.4649363422393799,0.4139812397956848,0.05095510244369507,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision/train
-data_loader,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
 DALI - nvidia-dali-cuda100==0.24.0,2,False,1234,0,128,100,0.14676368474960327,0.10197487354278564,0.04478881120681763,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision/train
-data_loader,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
 DALI - nvidia-dali-cuda100==0.24.0,2,True,1234,0,128,100,0.14691727876663208,0.10553764820098877,0.04137963056564331,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision/train
-data_loader,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
 DALI - nvidia-dali-cuda100==0.24.0,2,False,1234,0,256,100,0.27934448957443236,0.23151329755783082,0.04783119201660156,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision/train
-data_loader,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
 DALI - nvidia-dali-cuda100==0.24.0,2,True,1234,0,256,100,0.290224461555481,0.24279365062713623,0.047430810928344724,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision/train
-data_loader,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
 DALI - nvidia-dali-cuda100==0.24.0,4,False,1234,0,128,100,0.1396495842933655,0.09212161779403687,0.04752796649932861,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision/train
-data_loader,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
 DALI - nvidia-dali-cuda100==0.24.0,4,True,1234,0,128,100,0.14224843740463256,0.09343186378479004,0.048816573619842527,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision/train
-data_loader,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
 DALI - nvidia-dali-cuda100==0.24.0,4,False,1234,0,256,100,0.26053854942321775,0.20270814180374144,0.05783040761947632,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision/train
-data_loader,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
 DALI - nvidia-dali-cuda100==0.24.0,4,True,1234,0,256,100,0.25688925504684446,0.20063130378723146,0.05625795125961304,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision/train
