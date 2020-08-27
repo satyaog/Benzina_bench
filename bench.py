@@ -11,7 +11,7 @@ import torch.backends.cudnn as cudnn
 import torch.optim
 import torchvision.models as models
 
-Measure = namedtuple("Measure", ["data_loader", "workers", "sequence", "seed",
+Measure = namedtuple("Measure", ["data_loader", "model", "workers", "sequence", "seed",
                                  "epoch", "batch_size", "batches_cnt", "batch_time",
                                  "data_time", "train_time", "data_path"])
 
@@ -113,11 +113,12 @@ def main_worker(make_dataloader, dataloader_name, args):
 
         with open("measures.csv", 'a') as measures_file:
             measures_file.write(','.join([str(field) for field in
-                Measure(data_loader=dataloader_name, workers=args.workers,
-                        sequence=args.sequence, seed=args.seed, epoch=epoch,
-                        batch_size=args.batch_size, batches_cnt=batch_time.count,
-                        batch_time=batch_time.avg, data_time=data_time.avg,
-                        train_time=train_time.avg, data_path=args.data)]) + '\n')
+                Measure(data_loader=dataloader_name, model=args.arch,
+                        workers=args.workers, sequence=args.sequence,
+                        seed=args.seed, epoch=epoch, batch_size=args.batch_size,
+                        batches_cnt=batch_time.count, batch_time=batch_time.avg,
+                        data_time=data_time.avg, train_time=train_time.avg,
+                        data_path=args.data)]) + '\n')
 
 
 def train(train_loader, model, criterion, optimizer, epoch, args):

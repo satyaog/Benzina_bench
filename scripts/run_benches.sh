@@ -83,9 +83,10 @@ for workers in 1 2 4 6 8 16; do
 		break
 	fi
 	for batch_size in ${BATCH_SIZE}; do
+	for arch in "resnet18" "resnet50"; do
 	for sequence in "" "--sequence"; do
 		ln -sf results/${MACHINE_NAME}/benzina_measures.csv measures.csv
-		jug ${cmd} -- benzina_bench.py --arch=resnet18 \
+		jug ${cmd} -- benzina_bench.py --arch=${arch}\
 			--workers=1 \
 			--epochs=1 \
 			--batch-size=${batch_size} \
@@ -97,7 +98,7 @@ for workers in 1 2 4 6 8 16; do
 			"$(git -C Benzina/ rev-parse HEAD)" >> bench.out 2>> bench.err
 
 		ln -sf results/${MACHINE_NAME}/torchvision_measures.csv measures.csv
-		jug ${cmd} -- torchvision_bench.py --arch=resnet18 \
+		jug ${cmd} -- torchvision_bench.py --arch=${arch} \
 			--workers=${workers} \
 			--epochs=1 \
 			--batch-size=${batch_size} \
@@ -109,7 +110,7 @@ for workers in 1 2 4 6 8 16; do
 			"$(echo $(grep "torch" results/${MACHINE_NAME}/env))" >> bench.out 2>> bench.err
 
 		ln -sf results/${MACHINE_NAME}/dali_measures.csv measures.csv
-		jug ${cmd} -- dali_bench.py --arch=resnet18 \
+		jug ${cmd} -- dali_bench.py --arch=${arch} \
 			--workers=${workers} \
 			--epochs=1 \
 			--batch-size=${batch_size} \
@@ -119,6 +120,7 @@ for workers in 1 2 4 6 8 16; do
 			${sequence} \
 			${DS_DIR}/imagenet_torchvision/train \
 			"$(echo $(grep "dali" results/${MACHINE_NAME}/env))" >> bench.out 2>> bench.err
+	done
 	done
 	done
 done
