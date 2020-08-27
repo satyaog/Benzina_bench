@@ -1,0 +1,17 @@
+data_loader,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
+DALI - nvidia-dali-cuda100==0.24.0,1,False,1234,0,128,100,0.220925452709198,0.18321170568466186,0.037713747024536136,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision/train
+DALI - nvidia-dali-cuda100==0.24.0,1,True,1234,0,128,100,0.22679758071899414,0.18956616640090942,0.037231414318084716,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision/train
+DALI - nvidia-dali-cuda100==0.24.0,1,False,1234,0,256,100,0.44516132831573485,0.4022962546348572,0.042865073680877684,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision/train
+DALI - nvidia-dali-cuda100==0.24.0,1,True,1234,0,256,100,0.4701249313354492,0.4253068518638611,0.04481807947158813,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision/train
+DALI - nvidia-dali-cuda100==0.24.0,2,False,1234,0,128,100,0.13535434484481812,0.09583985567092895,0.03951448917388916,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision/train
+DALI - nvidia-dali-cuda100==0.24.0,2,True,1234,0,128,100,0.14040536403656007,0.10278788805007935,0.037617475986480714,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision/train
+DALI - nvidia-dali-cuda100==0.24.0,2,False,1234,0,256,100,0.27801677227020266,0.23109079360961915,0.0469259786605835,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision/train
+DALI - nvidia-dali-cuda100==0.24.0,2,True,1234,0,256,100,0.2824694657325745,0.2381431293487549,0.04432633638381958,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision/train
+DALI - nvidia-dali-cuda100==0.24.0,4,False,1234,0,128,100,0.13091999530792237,0.09022388696670532,0.04069610834121704,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision/train
+DALI - nvidia-dali-cuda100==0.24.0,4,True,1234,0,128,100,0.1304797101020813,0.08742313623428345,0.04305657386779785,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision/train
+DALI - nvidia-dali-cuda100==0.24.0,4,False,1234,0,256,100,0.24303805351257324,0.1939076542854309,0.04913039922714233,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision/train
+DALI - nvidia-dali-cuda100==0.24.0,4,True,1234,0,256,100,0.2415395951271057,0.18804100275039673,0.05349859237670898,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision/train
+DALI - nvidia-dali-cuda100==0.24.0,6,False,1234,0,128,100,0.13197538137435913,0.08299034357070922,0.048985037803649906,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision/train
+DALI - nvidia-dali-cuda100==0.24.0,6,True,1234,0,128,100,0.1312169623374939,0.08180047988891602,0.04941648244857788,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision/train
+DALI - nvidia-dali-cuda100==0.24.0,6,False,1234,0,256,100,0.24522019386291505,0.1848045778274536,0.060415616035461424,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision/train
+DALI - nvidia-dali-cuda100==0.24.0,6,True,1234,0,256,100,0.2422110080718994,0.1870069146156311,0.05520409345626831,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision/train

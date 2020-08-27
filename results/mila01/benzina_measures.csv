@@ -1,0 +1,5 @@
+data_loader,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
+Benzina - 8c65e122ca48a98b28d29b0f7c0f35288dc49086,1,False,1234,0,128,100,0.2580833411216736,0.21567589521408081,0.042407445907592774,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_benzina/ilsvrc2012.bzna
+Benzina - 8c65e122ca48a98b28d29b0f7c0f35288dc49086,1,True,1234,0,128,100,0.24913992643356322,0.21552794218063354,0.03361198425292969,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_benzina/ilsvrc2012.bzna
+Benzina - 8c65e122ca48a98b28d29b0f7c0f35288dc49086,1,False,1234,0,256,100,0.48839285612106326,0.44931931257247926,0.039073543548583986,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_benzina/ilsvrc2012.bzna
+Benzina - 8c65e122ca48a98b28d29b0f7c0f35288dc49086,1,True,1234,0,256,100,0.48909855842590333,0.4497947120666504,0.03930384635925293,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_benzina/ilsvrc2012.bzna
