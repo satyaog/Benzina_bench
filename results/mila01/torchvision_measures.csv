@@ -17,25 +17,10 @@ PyTorch - torch==1.4.1 torchvision==0.5.0,6,False,1234,0,256,100,0.6003822469711
 PyTorch - torch==1.4.1 torchvision==0.5.0,6,True,1234,0,256,100,0.47547595262527464,0.3031619954109192,0.17231395721435547,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision
 data_loader,model,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
 PyTorch - torch==1.4.1 torchvision==0.5.0,resnet50,1,False,1234,0,128,100,0.8857295060157776,0.6419903779029846,0.24373912811279297,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision
-data_loader,model,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
 PyTorch - torch==1.4.1 torchvision==0.5.0,resnet50,1,True,1234,0,128,100,0.8376960492134095,0.5969179034233093,0.2407781457901001,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision
-data_loader,model,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
-data_loader,model,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
-data_loader,model,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
 PyTorch - torch==1.4.1 torchvision==0.5.0,resnet50,2,False,1234,0,128,100,0.5014802193641663,0.17875173807144165,0.32272848129272463,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision
-data_loader,model,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
 PyTorch - torch==1.4.1 torchvision==0.5.0,resnet50,2,True,1234,0,128,100,0.4618361902236938,0.1284044313430786,0.3334317588806152,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision
-data_loader,model,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
-data_loader,model,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
-data_loader,model,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
 PyTorch - torch==1.4.1 torchvision==0.5.0,resnet50,4,False,1234,0,128,100,0.49185140371322633,0.10432112932205201,0.3875302743911743,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision
-data_loader,model,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
 PyTorch - torch==1.4.1 torchvision==0.5.0,resnet50,4,True,1234,0,128,100,0.4072129702568054,0.0002929544448852539,0.40692001581192017,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision
-data_loader,model,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
-data_loader,model,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
-data_loader,model,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
 PyTorch - torch==1.4.1 torchvision==0.5.0,resnet50,6,False,1234,0,128,100,0.43239872217178343,0.023352208137512206,0.4090465140342712,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision
-data_loader,model,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
 PyTorch - torch==1.4.1 torchvision==0.5.0,resnet50,6,True,1234,0,128,100,0.4120950984954834,0.00029507637023925784,0.41180002212524414,/Tmp/slurm.574364.0/localscratch/datasets/imagenet_torchvision
-data_loader,model,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
-data_loader,model,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path

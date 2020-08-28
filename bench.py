@@ -94,15 +94,19 @@ def main_worker(make_dataloader, dataloader_name, args):
                                 momentum=args.momentum,
                                 weight_decay=args.weight_decay)
 
-    if not os.path.exists("measures.csv"):
-        first_line = None
-    else:
-        with open("measures.csv", 'r') as measures_file:
-            first_line = measures_file.readline()
+    is_header_match = False
+    header = ','.join(Measure._fields) + '\n'
 
-    if first_line != ','.join(Measure._fields) + "\n":
+    if os.path.exists("measures.csv"):
+        with open("measures.csv", 'r') as measures_file:
+            for line in measures_file:
+                if line == header:
+                    is_header_match = True
+                    break
+
+    if not is_header_match:
         with open("measures.csv", 'a') as measures_file:
-            measures_file.write(','.join(Measure._fields) + "\n")
+            measures_file.write(header)
 
     train_loader = make_dataloader(args)
 

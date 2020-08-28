@@ -95,7 +95,7 @@ for workers in 1 2 4 6 8 16; do
 			--gpu=0 \
 			${sequence} \
 			${DS_DIR}/imagenet_benzina/ilsvrc2012.bzna \
-			"$(git -C Benzina/ rev-parse HEAD)" >> bench.out 2>> bench.err
+			"$(git -C Benzina/ rev-parse HEAD)" >> benzina_bench.out 2>> benzina_bench.err
 
 		ln -sf results/${MACHINE_NAME}/torchvision_measures.csv measures.csv
 		jug ${cmd} -- torchvision_bench.py --arch=${arch} \
@@ -107,7 +107,7 @@ for workers in 1 2 4 6 8 16; do
 			--gpu=0 \
 			${sequence} \
 			${DS_DIR}/imagenet_torchvision \
-			"$(echo $(grep "torch" results/${MACHINE_NAME}/env))" >> bench.out 2>> bench.err
+			"$(echo $(grep "torch" results/${MACHINE_NAME}/env))" >> torchvision_bench.out 2>> torchvision_bench.err
 
 		ln -sf results/${MACHINE_NAME}/dali_measures.csv measures.csv
 		jug ${cmd} -- dali_bench.py --arch=${arch} \
@@ -119,7 +119,7 @@ for workers in 1 2 4 6 8 16; do
 			--gpu=0 \
 			${sequence} \
 			${DS_DIR}/imagenet_torchvision/train \
-			"$(echo $(grep "dali" results/${MACHINE_NAME}/env))" >> bench.out 2>> bench.err
+			"$(echo $(grep "dali" results/${MACHINE_NAME}/env))" >> dali_bench.out 2>> dali_bench.err
 	done
 	done
 	done
