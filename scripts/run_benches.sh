@@ -1,8 +1,6 @@
 #!/bin/bash
 
-BATCH_SIZE="128 256"
-
-if [ -z "${SLURM_CPUS_PER_TASK}" ]
+if [ -z ${SLURM_CPUS_PER_TASK} ]
 then
 	MAX_WORKERS=${SLURM_JOB_CPUS_PER_NODE}
 else
@@ -38,17 +36,23 @@ do
 		BATCH_SIZE=${!i}
 		echo "batch_size = [${BATCH_SIZE}]"
 		;;
+		--batches)
+		i=$((i+1))
+		BATCHES=${!i}
+		echo "batches = [${BATCHES}]"
+		;;
 		-h | --help | *)
 		>&2 echo "Unknown option [${arg}]. Valid options are:"
 		>&2 echo "--ds_dir DIR directory where to look for the datasets"
 		>&2 echo "[--max_workers] INT maximum number of workers to use (optional)"
 		>&2 echo "[--batch_sizes \"INT ...\"] batch sizes to use (optional)"
+		>&2 echo "[--batches \"INT ...\"] number of batches to train (optional)"
 		exit 1
 		;;
 	esac
 done
 
-if [ -z "${DS_DIR}" ]
+if [ -z ${DS_DIR} ]
 then
 	>&2 echo "--ds_dir DIR option must be an existing directory"
 	>&2 echo "Missing --ds_dir option"
@@ -58,6 +62,16 @@ fi
 if [ -z ${MAX_WORKERS} ]
 then
 	MAX_WORKERS=1
+fi
+
+if [ -z ${BATCH_SIZE} ]
+then
+	BATCH_SIZE="128 256"
+fi
+
+if [ -z ${BATCHES} ]
+then
+	BATCHES="1000 0"
 fi
 
 MACHINE_NAME=$(hostname | grep -o "[^\.]*" | head -1)
@@ -83,14 +97,15 @@ for workers in 1 2 4 6 8 16; do
 		break
 	fi
 	for batch_size in ${BATCH_SIZE}; do
+	for batches in ${BATCHES}; do
 	for arch in "resnet18" "resnet50"; do
 	for sequence in "" "--sequence"; do
 		ln -sf results/${MACHINE_NAME}/benzina_measures.csv measures.csv
-		jug ${cmd} -- benzina_bench.py --arch=${arch}\
+		jug ${cmd} -- benzina_bench.py --arch=${arch} \
 			--workers=1 \
 			--epochs=1 \
 			--batch-size=${batch_size} \
-			--batches=100 \
+			--batches=${batches} \
 			--seed=1234 \
 			--gpu=0 \
 			${sequence} \
@@ -102,7 +117,7 @@ for workers in 1 2 4 6 8 16; do
 			--workers=${workers} \
 			--epochs=1 \
 			--batch-size=${batch_size} \
-			--batches=100 \
+			--batches=${batches} \
 			--seed=1234 \
 			--gpu=0 \
 			${sequence} \
@@ -114,12 +129,13 @@ for workers in 1 2 4 6 8 16; do
 			--workers=${workers} \
 			--epochs=1 \
 			--batch-size=${batch_size} \
-			--batches=100 \
+			--batches=${batches} \
 			--seed=1234 \
 			--gpu=0 \
 			${sequence} \
 			${DS_DIR}/imagenet_torchvision/train \
 			"$(echo $(grep "dali" results/${MACHINE_NAME}/env))" >> dali_bench.out 2>> dali_bench.err
+	done
 	done
 	done
 	done

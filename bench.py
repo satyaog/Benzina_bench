@@ -12,8 +12,8 @@ import torch.optim
 import torchvision.models as models
 
 Measure = namedtuple("Measure", ["data_loader", "model", "workers", "sequence", "seed",
-                                 "epoch", "batch_size", "batches_cnt", "batch_time",
-                                 "data_time", "train_time", "data_path"])
+                                 "epoch", "batch_size", "batches_cnt", "epoch_time",
+                                 "batch_time", "data_time", "train_time", "data_path"])
 
 
 def build_parser():
@@ -112,7 +112,7 @@ def main_worker(make_dataloader, dataloader_name, args):
 
     for epoch in range(args.epochs):
         # train for one epoch
-        batch_time, data_time, train_time = \
+        epoch_time, batch_time, data_time, train_time = \
             train(train_loader, model, criterion, optimizer, epoch, args)
 
         with open("measures.csv", 'a') as measures_file:
@@ -120,12 +120,13 @@ def main_worker(make_dataloader, dataloader_name, args):
                 Measure(data_loader=dataloader_name, model=args.arch,
                         workers=args.workers, sequence=args.sequence,
                         seed=args.seed, epoch=epoch, batch_size=args.batch_size,
-                        batches_cnt=batch_time.count, batch_time=batch_time.avg,
-                        data_time=data_time.avg, train_time=train_time.avg,
-                        data_path=args.data)]) + '\n')
+                        batches_cnt=batch_time.count, epoch_time=epoch_time.avg,
+                        batch_time=batch_time.avg, data_time=data_time.avg,
+                        train_time=train_time.avg, data_path=args.data)]) + '\n')
 
 
 def train(train_loader, model, criterion, optimizer, epoch, args):
+    epoch_time = AverageMeter()
     batch_time = AverageMeter()
     data_time = AverageMeter()
     train_time = AverageMeter()
@@ -133,25 +134,21 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
     # switch to train mode
     model.train()
 
-    batch_generator = iter(train_loader)
-    batches_cnt = args.batches if args.batches else len(train_loader) - 10
+    batch_iterator = iter(train_loader)
     try:
         len_loader = len(train_loader)
+        batches_cnt = args.batches if args.batches else len_loader - 10
     except TypeError:
-        len_loader = "N/A"
+        len_loader = "NA"
+        batches_cnt = args.batches if args.batches else None
 
     # warm-up
     for i in range(10):
-        next(batch_generator)
+        next(batch_iterator)
 
     begin = time.time()
     end = begin
-    for i in range(batches_cnt):
-        try:
-            images, target = next(batch_generator)
-        except StopIteration:
-            break
-
+    for i, (images, target) in enumerate(batch_iterator):
         # measure data loading time
         data_time.update(time.time() - end)
 
@@ -186,11 +183,14 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
                           data_time=data_time,
                           train_time=train_time))
 
-    torch.cuda.synchronize()
-    end = time.time()
-    print('Epoch time: {time:.3f}'.format(time=end-begin))
+        if batches_cnt is not None and i >= batches_cnt:
+            break
 
-    return batch_time, data_time, train_time
+    torch.cuda.synchronize()
+    epoch_time.update(time.time() - begin)
+    print('Epoch time: {time:.3f}'.format(time=epoch_time.avg))
+
+    return epoch_time, batch_time, data_time, train_time
 
 
 class AverageMeter(object):
