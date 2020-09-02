@@ -137,10 +137,10 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
     batch_iterator = iter(train_loader)
     try:
         len_loader = len(train_loader)
-        batches_cnt = args.batches if args.batches else len_loader - 10
     except TypeError:
         len_loader = "NA"
-        batches_cnt = args.batches if args.batches else None
+
+    batches_cnt = args.batches if args.batches else None
 
     # warm-up
     for i in range(10):

@@ -91,15 +91,27 @@ pip freeze >> results/${MACHINE_NAME}/env
 
 
 for cmd in "status" "execute"; do
+for batches in ${BATCHES}; do
 for workers in 1 2 4 6 8 16; do
-	if [[ "${workers}" -gt "${MAX_WORKERS}" ]]
+	if [ "${workers}" -gt "${MAX_WORKERS}" ]
 	then
-		break
+		continue
+	fi
+	if [ "${batches}" -eq 0 ] && { [ "${workers}" -eq 1 ] || [ "${workers}" -eq "${MAX_WORKERS}" ]; }
+	then
+		continue
 	fi
 	for batch_size in ${BATCH_SIZE}; do
-	for batches in ${BATCHES}; do
 	for arch in "resnet18" "resnet50"; do
 	for sequence in "" "--sequence"; do
+		if [ "${batches}" -eq 0 ] && [ ! -z "${sequence}" ]
+		then
+			continue
+		fi
+		if [ "${workers}" -gt 1 ] && [ ! -z "${sequence}" ]
+		then
+			continue
+		fi
 		ln -sf results/${MACHINE_NAME}/benzina_measures.csv measures.csv
 		jug ${cmd} -- benzina_bench.py --arch=${arch} \
 			--workers=1 \
@@ -138,7 +150,7 @@ for workers in 1 2 4 6 8 16; do
 	done
 	done
 	done
-	done
+done
 done
 done
 
