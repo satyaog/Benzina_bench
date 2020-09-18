@@ -1,30 +1,32 @@
 #!/bin/bash
 
-if [ -z ${SLURM_CPUS_PER_TASK} ]
+if [[ -z ${SLURM_CPUS_PER_TASK} ]]
 then
 	MAX_WORKERS=${SLURM_JOB_CPUS_PER_NODE}
 else
 	MAX_WORKERS=${SLURM_CPUS_PER_TASK}
 fi
 
-for ((i = 1; i <= ${#@}; i++))
+while [[ $# -gt 0 ]]
 do
-	arg=${!i}
+	arg=$1
 	case ${arg} in
 		--ds_dir)
-		i=$((i+1))
-		DS_DIR=${!i}
+		shift
+		DS_DIR=$1
+		shift
 		echo "ds_dir = [${DS_DIR}]"
-		if [ ! -d ${DS_DIR} ]
+		if [[ ! -d ${DS_DIR} ]]
 		then
 			>&2 echo "--ds_dir DIR option must be an existing directory"
 			unset DS_DIR
 		fi
 		;;
 		--max_workers)
-		i=$((i+1))
-		_MAX_WORKERS=${!i}
-		if [[ "${_MAX_WORKERS}" -lt "${MAX_WORKERS}" ]] || [ -z ${MAX_WORKERS} ]
+		shift
+		_MAX_WORKERS=$1
+		shift
+		if [[ "${_MAX_WORKERS}" -lt "${MAX_WORKERS}" ]] || [[ -z ${MAX_WORKERS} ]]
 		then
 			MAX_WORKERS=${_MAX_WORKERS}
 		fi
@@ -32,17 +34,23 @@ do
 		unset _MAX_WORKERS
 		;;
 		--batch_sizes)
-		i=$((i+1))
-		BATCH_SIZE=${!i}
+		shift
+		BATCH_SIZE=$1
+		shift
 		echo "batch_size = [${BATCH_SIZE}]"
 		;;
 		--batches)
-		i=$((i+1))
-		BATCHES=${!i}
+		shift
+		BATCHES=$1
+		shift
 		echo "batches = [${BATCHES}]"
 		;;
 		-h | --help | *)
-		>&2 echo "Unknown option [${arg}]. Valid options are:"
+		if [[ "${arg}" != "-h" ]] && [[ "${arg}" != "--help" ]]
+		then
+			>&2 echo "Unknown option [${arg}]"
+		fi
+		>&2 echo "Options for $(basename "$0") are:"
 		>&2 echo "--ds_dir DIR directory where to look for the datasets"
 		>&2 echo "[--max_workers] INT maximum number of workers to use (optional)"
 		>&2 echo "[--batch_sizes \"INT ...\"] batch sizes to use (optional)"
@@ -52,24 +60,24 @@ do
 	esac
 done
 
-if [ -z ${DS_DIR} ]
+if [[ -z ${DS_DIR} ]]
 then
 	>&2 echo "--ds_dir DIR option must be an existing directory"
 	>&2 echo "Missing --ds_dir option"
 	exit 1
 fi
 
-if [ -z ${MAX_WORKERS} ]
+if [[ -z ${MAX_WORKERS} ]]
 then
 	MAX_WORKERS=1
 fi
 
-if [ -z ${BATCH_SIZE} ]
+if [[ -z ${BATCH_SIZE} ]]
 then
 	BATCH_SIZE="128 256"
 fi
 
-if [ -z ${BATCHES} ]
+if [[ -z ${BATCHES} ]]
 then
 	BATCHES="1000 0"
 fi
@@ -93,22 +101,22 @@ pip freeze >> results/${MACHINE_NAME}/env
 for cmd in "status" "execute"; do
 for batches in ${BATCHES}; do
 for workers in 1 2 4 6 8 16; do
-	if [ "${workers}" -gt "${MAX_WORKERS}" ]
+	if [[ "${workers}" -gt "${MAX_WORKERS}" ]]
 	then
 		continue
 	fi
-	if [ "${batches}" -eq 0 ] && { [ "${workers}" -eq 1 ] || [ "${workers}" -eq "${MAX_WORKERS}" ]; }
+	if [[ "${batches}" -eq 0 ]] && { [[ "${workers}" -eq 1 ]] || [[ "${workers}" -eq "${MAX_WORKERS}" ]]; }
 	then
 		continue
 	fi
 	for batch_size in ${BATCH_SIZE}; do
 	for arch in "resnet18" "resnet50"; do
 	for sequence in "" "--sequence"; do
-		if [ "${batches}" -eq 0 ] && [ ! -z "${sequence}" ]
+		if [[ "${batches}" -eq 0 ]] && [[ ! -z "${sequence}" ]]
 		then
 			continue
 		fi
-		if [ "${workers}" -gt 1 ] && [ ! -z "${sequence}" ]
+		if [[ "${workers}" -gt 1 ]] && [[ ! -z "${sequence}" ]]
 		then
 			continue
 		fi
@@ -121,7 +129,7 @@ for workers in 1 2 4 6 8 16; do
 			--seed=1234 \
 			--gpu=0 \
 			${sequence} \
-			${DS_DIR}/imagenet_benzina/ilsvrc2012.bzna \
+			${DS_DIR}/imagenet_benzina \
 			"$(git -C Benzina/ rev-parse HEAD)" >> benzina_bench.out 2>> benzina_bench.err
 
 		ln -sf results/${MACHINE_NAME}/torchvision_measures.csv measures.csv
