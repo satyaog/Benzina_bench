@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ ! -z "${SLURM_TMPDIR}" ]
+if [[ ! -z "${SLURM_TMPDIR}" ]]
 then
 	mkdir -p ${SLURM_TMPDIR}/localscratch
 fi

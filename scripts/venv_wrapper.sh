@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source scripts/utils.sh
+
 function exit_on_error_code {
 	ERR=$?
 	if [[ $ERR -ne 0 ]]
@@ -9,21 +11,12 @@ function exit_on_error_code {
 	fi
 }
 
-function load_git_annex {
-	module load miniconda/3
-
-	if [[ ! -d "${TMPDIR}/env/git_annex/" ]]
-	then
-		conda create --prefix ${TMPDIR}/env/git_annex/ \
-			--yes --no-default-packages \
-			-c conda-forge --use-local --no-channel-priority \
-			python=$(python -V 2>&1 | grep -Eo "[0-9]+\.[0-9]+\.[0-9]+") \
-			git-annex=7.20190819
-	fi
-
-	conda activate ${TMPDIR}/env/git_annex/
-	exit_on_error_code "Failed to activate git-annex conda env"
-
+function _load_gitannex {
+	which conda || module load miniconda/3
+	# Configure conda for bash shell
+	eval "$(conda shell.bash hook)"
+	load_gitannex $@
+	# Unload to prevent conflict with other python module loads
 	module unload miniconda/3
 }
 
@@ -49,45 +42,6 @@ function copy_datasets {
 	cp -aut ${DS_TMPDIR}/imagenet_torchvision ${SUPER_DS}/imagenet.var/imagenet_torchvision/*
 	exit_on_error_code "Failed to copy dataset imagenet_torchvision"
 }
-
-function module_load_bench {
-	module load python/3.7 \
-		cuda/10.1 \
-		python/3.7/cuda/10.1/cudnn/7.6/pytorch/1.4.1
-}
-
-function setup_bench_env {
-	if [[ ! -d "${TMPDIR}/venv/bzna/" ]]
-	then
-		mkdir -p ${TMPDIR}/venv/
-		virtualenv --no-download ${TMPDIR}/venv/bzna/
-	fi
-
-	source ${TMPDIR}/venv/bzna/bin/activate
-
-	pip install \
-		-r scripts/requirements_benches.txt
-	exit_on_error_code "Failed to install requirements: pip install"
-
-	git clone https://github.com/satyaog/Benzina.git
-	(cd Benzina/ && \
-	 git fetch && \
-	 git checkout ${TREE_ISH} && \
-	 git tag --force _bench)
-	exit_on_error_code "Failed to clone Benzina"
-	rm -rf ${TMPDIR}/Benzina/
-	git clone --branch _bench --depth 1 -- file://$(cd Benzina; pwd)/.git/ ${TMPDIR}/Benzina/
-	pip uninstall --yes pybenzinaparse
-	(cd ${TMPDIR}/Benzina/ && \
-	 pip install meson==0.54 pytest==6.0.1 && \
-	 pip install .)
-	exit_on_error_code "Failed to install Benzina"
-
-	# Install Datalad
-	pip install datalad==0.11.8
-}
-
-PYTHONNOUSERSITE=true
 
 while [[ $# -gt 0 ]]
 do
@@ -142,16 +96,16 @@ then
 	exit 1
 fi
 
-if [[ -z ${TMPDIR} ]]
+if [[ -z "${TMPDIR}" ]]
 then
 	TMPDIR=tmp
 fi
 
-DS_TMPDIR=${TMPDIR}/datasets
+DS_TMPDIR="${TMPDIR}/datasets/"
 
-which git-annex || load_git_annex; exit_on_error_code
+which git-annex || _load_gitannex --tmpdir "${TMPDIR}/"; exit_on_error_code
 module_load_bench; exit_on_error_code
-setup_bench_env; exit_on_error_code
+setup_bench_env --tree_ish ${TREE_ISH} --tmpdir "${TMPDIR}/"; exit_on_error_code
 if [[ ! -z "$(git diff --name-only && git diff --cached --name-only && datalad diff)" ]]
 then
 	$(exit 1); exit_on_error_code "Environment is dirty, Datalad will not run"
