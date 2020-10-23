@@ -1,0 +1,13 @@
+data_loader,workers,sequence,seed,epoch,batch_size,batches_cnt,batch_time,data_time,train_time,data_path
+PyTorch - torch==1.4.1 torchvision==0.5.0,1,False,1234,0,128,100,0.8579936909675598,0.8105527353286743,0.0474409556388855,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision
+PyTorch - torch==1.4.1 torchvision==0.5.0,1,True,1234,0,128,100,0.8390461802482605,0.7983666086196899,0.040679571628570554,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision
+PyTorch - torch==1.4.1 torchvision==0.5.0,1,False,1234,0,256,100,1.7078256106376648,1.6564864754676818,0.05133913516998291,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision
+PyTorch - torch==1.4.1 torchvision==0.5.0,1,True,1234,0,256,100,1.6649375557899475,1.6128804874420166,0.05205706834793091,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision
+PyTorch - torch==1.4.1 torchvision==0.5.0,2,False,1234,0,128,100,0.4576663756370544,0.38685265064239505,0.07081372499465942,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision
+PyTorch - torch==1.4.1 torchvision==0.5.0,2,True,1234,0,128,100,0.4541559863090515,0.3901231813430786,0.0640328049659729,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision
+PyTorch - torch==1.4.1 torchvision==0.5.0,2,False,1234,0,256,100,0.9109971380233765,0.7940108799934387,0.11698625802993774,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision
+PyTorch - torch==1.4.1 torchvision==0.5.0,2,True,1234,0,256,100,0.8731953692436218,0.7732086539268493,0.09998671531677246,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision
+PyTorch - torch==1.4.1 torchvision==0.5.0,4,False,1234,0,128,100,0.35576319456100464,0.24123106002807618,0.11453213453292847,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision
+PyTorch - torch==1.4.1 torchvision==0.5.0,4,True,1234,0,128,100,0.35595461845397947,0.25116960525512694,0.10478501319885254,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision
+PyTorch - torch==1.4.1 torchvision==0.5.0,4,False,1234,0,256,100,0.704977252483368,0.4986933422088623,0.20628391027450563,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision
+PyTorch - torch==1.4.1 torchvision==0.5.0,4,True,1234,0,256,100,0.6622387957572937,0.5156206679344177,0.14661812782287598,/Tmp/slurm.573478.0/localscratch/datasets/imagenet_torchvision
