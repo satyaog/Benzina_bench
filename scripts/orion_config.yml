@@ -1,0 +1,13 @@
+database:
+    type: 'pickleddb'
+    host: 'results/pickleddb.pkl'
+
+experiment:
+    algorithms:
+        asha:
+            seed: 1234
+            # num_rungs = log(120/1) / log(4) + 1
+            num_rungs: 4
+            num_brackets: 1
+
+    strategy: StubParallelStrategy
