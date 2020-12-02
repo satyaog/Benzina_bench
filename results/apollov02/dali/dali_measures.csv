@@ -1,0 +1,5 @@
+dataloader,model,workers,sequence,seed,epoch,batch_size,batches_cnt,epoch_time,batch_time,data_time,train_time,data_path
+dali - nvidia-dali-cuda100==0.24.0,resnet18,6,False,1234,0,128,10010,504.1759600639343,0.05036132114155071,0.050188117141609305,0.00017320399994140382,/Tmp/slurm.661833.0/localscratch/datasets/imagenet_dali
+dali - nvidia-dali-cuda100==0.24.0,resnet18,6,False,1234,1,128,0,252.08802998065948,0,0,0,/Tmp/slurm.661833.0/localscratch/datasets/imagenet_dali
+dali - nvidia-dali-cuda100==0.24.0,resnet50,6,False,1234,0,128,10010,505.81402921676636,0.050525473809980605,0.050341615762624824,0.00018385804735578142,/Tmp/slurm.661833.0/localscratch/datasets/imagenet_dali
+dali - nvidia-dali-cuda100==0.24.0,resnet50,6,False,1234,1,128,0,252.90707123279572,0,0,0,/Tmp/slurm.661833.0/localscratch/datasets/imagenet_dali

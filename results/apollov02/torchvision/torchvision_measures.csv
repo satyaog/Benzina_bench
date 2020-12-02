@@ -1,0 +1,5 @@
+dataloader,model,workers,sequence,seed,epoch,batch_size,batches_cnt,epoch_time,batch_time,data_time,train_time,data_path
+torchvision - torch==1.4.1 torchvision==0.5.0,resnet18,6,False,1234,0,128,10010,2041.437968969345,0.20388994388408832,0.2037962040820203,9.373980206804913e-05,/Tmp/slurm.661833.0/localscratch/datasets/imagenet_torchvision
+torchvision - torch==1.4.1 torchvision==0.5.0,resnet18,6,False,1234,1,128,10010,2078.8890941143036,0.21137901829196498,0.21129115154216815,8.786674979683403e-05,/Tmp/slurm.661833.0/localscratch/datasets/imagenet_torchvision
+torchvision - torch==1.4.1 torchvision==0.5.0,resnet50,6,False,1234,0,128,10010,2168.6820406913757,0.2166063691948082,0.2165145432913339,9.18259034742723e-05,/Tmp/slurm.661833.0/localscratch/datasets/imagenet_torchvision
+torchvision - torch==1.4.1 torchvision==0.5.0,resnet50,6,False,1234,1,128,10010,2140.717025399208,0.2110201263284826,0.21092853000709466,9.159632138796262e-05,/Tmp/slurm.661833.0/localscratch/datasets/imagenet_torchvision
