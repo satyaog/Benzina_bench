@@ -11,9 +11,10 @@ import torch.backends.cudnn as cudnn
 import torch.optim
 import torchvision.models as models
 
-Measure = namedtuple("Measure", ["data_loader", "model", "workers", "sequence", "seed",
-                                 "epoch", "batch_size", "batches_cnt", "epoch_time",
-                                 "batch_time", "data_time", "train_time", "data_path"])
+Measure = namedtuple("Measure", ["data_loader", "model", "workers", "dl_only",
+                                 "sequence", "seed", "epoch", "batch_size",
+                                 "batches_cnt", "epoch_time", "batch_time",
+                                 "data_time", "train_time", "data_path"])
 
 
 def build_parser():
@@ -52,8 +53,10 @@ def build_parser():
                         help='seed for initializing training.')
     parser.add_argument('--gpu', default=0, type=int,
                         help='GPU id to use. (default: 0)')
+    parser.add_argument('--dl-only', action='store_true',
+                        help='Mesure dataloader only')
     parser.add_argument('--sequence', action='store_true',
-                        help='Load imagesin sequences')
+                        help='Load images in sequences')
     return parser
 
 
@@ -118,11 +121,13 @@ def main_worker(make_dataloader, dataloader_name, args):
         with open("measures.csv", 'a') as measures_file:
             measures_file.write(','.join([str(field) for field in
                 Measure(data_loader=dataloader_name, model=args.arch,
-                        workers=args.workers, sequence=args.sequence,
-                        seed=args.seed, epoch=epoch, batch_size=args.batch_size,
-                        batches_cnt=batch_time.count, epoch_time=epoch_time.avg,
-                        batch_time=batch_time.avg, data_time=data_time.avg,
-                        train_time=train_time.avg, data_path=args.data)]) + '\n')
+                        workers=args.workers, dl_only=args.dl_only,
+                        sequence=args.sequence, seed=args.seed, epoch=epoch,
+                        batch_size=args.batch_size,
+                        batches_cnt=batch_time.count,
+                        epoch_time=epoch_time.avg, batch_time=batch_time.avg,
+                        data_time=data_time.avg, train_time=train_time.avg,
+                        data_path=args.data)]) + '\n')
 
 
 def train(train_loader, model, criterion, optimizer, epoch, args):
@@ -157,14 +162,15 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
             target = target.cuda(args.gpu, non_blocking=True)
         target = target.view((-1,))
 
-        # compute output
-        output = model(images)
-        loss = criterion(output, target)
+        if not args.dl_only:
+            # compute output
+            output = model(images)
+            loss = criterion(output, target)
 
-        # compute gradient and do SGD step
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
+            # compute gradient and do SGD step
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
 
         # measure elapsed time
         batch_time.update(time.time() - end)

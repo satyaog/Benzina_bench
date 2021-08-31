@@ -10,19 +10,24 @@ from bench import main_worker, build_parser
 def make_dataloader(args):
     # Data loading code
     # Dataset
-    normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                     std=[0.229, 0.224, 0.225])
-
-    # Dataloaders
-    train_set = datasets.ImageNet(
-        root=args.data,
-        split="train",
-        transform=transforms.Compose([
+    if args.dl_only:
+        _transforms = transforms.Compose([
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+        ])
+    else:
+        normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                         std=[0.229, 0.224, 0.225])
+        _transforms = transforms.Compose([
             transforms.RandomResizedCrop(224),
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
             normalize,
-        ]))
+        ])
+
+    # Dataloaders
+    train_set = datasets.ImageNet(root=args.data, split="train",
+                                  transform=_transforms)
 
     train_sampler = torch.utils.data.SequentialSampler \
         if args.sequence else torch.utils.data.RandomSampler
