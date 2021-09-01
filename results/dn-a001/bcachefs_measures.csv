@@ -1,0 +1,9 @@
+data_loader,model,workers,dl_only,sequence,seed,epoch,batch_size,batches_cnt,epoch_time,batch_time,data_time,train_time,data_path
+BCacheFS - ,resnet18,1,True,False,1234,0,256,4995,5410.000503778458,1.0830541104287117,1.0828568922506796,0.00019721817803215814,/home/satya-local/scratch/satya-local//imagenet_bcachefs/imagenet_bcachefs.img
+BCacheFS - ,resnet18,1,True,True,1234,0,256,4995,5242.523529052734,1.049525677143513,1.0493466872710724,0.00017898987244080016,/home/satya-local/scratch/satya-local//imagenet_bcachefs/imagenet_bcachefs.img
+BCacheFS - ,resnet18,2,True,False,1234,0,256,4995,2691.1675469875336,0.5387366904391422,0.5385623368176373,0.00017435362150480558,/home/satya-local/scratch/satya-local//imagenet_bcachefs/imagenet_bcachefs.img
+BCacheFS - ,resnet18,4,True,False,1234,0,256,4995,5107.190896987915,1.0223202509207052,1.0221543431878686,0.00016590773283659636,/home/satya-local/scratch/satya-local//imagenet_bcachefs/imagenet_bcachefs.img
+BCacheFS - ,resnet18,6,True,False,1234,0,256,4995,914.8427884578705,0.18309167980312466,0.18291692891278424,0.00017475089034041366,/home/satya-local/scratch/satya-local//imagenet_bcachefs/imagenet_bcachefs.img
+BCacheFS - ,resnet18,8,True,False,1234,0,256,4995,685.8140354156494,0.13722506294976006,0.13704896665311553,0.00017609629664454494,/home/satya-local/scratch/satya-local//imagenet_bcachefs/imagenet_bcachefs.img
+BCacheFS - ,resnet18,16,True,False,1234,0,256,4995,355.4614474773407,0.07104199259608118,0.07087205494488323,0.0001699376511979509,/home/satya-local/scratch/satya-local//imagenet_bcachefs/imagenet_bcachefs.img
+BCacheFS - ,resnet18,32,True,False,1234,0,256,4995,228.73488759994507,0.04559842941161987,0.0452368148692974,0.00036161454232247383,/home/satya-local/scratch/satya-local//imagenet_bcachefs/imagenet_bcachefs.img

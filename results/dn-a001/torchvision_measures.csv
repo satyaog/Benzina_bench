@@ -1,0 +1,9 @@
+data_loader,model,workers,dl_only,sequence,seed,epoch,batch_size,batches_cnt,epoch_time,batch_time,data_time,train_time,data_path
+PyTorch - torch==1.8.1+cu111 torchvision==0.9.1,resnet18,1,True,False,1234,0,256,4995,5503.944805622101,1.1018720594850986,1.1016659193449432,0.0002061401401554142,/home/satya-local/scratch/satya-local//imagenet_torchvision
+PyTorch - torch==1.8.1+cu111 torchvision==0.9.1,resnet18,1,True,True,1234,0,256,4995,5491.816376686096,1.0994435607253372,1.099250088129435,0.0001934725959021766,/home/satya-local/scratch/satya-local//imagenet_torchvision
+PyTorch - torch==1.8.1+cu111 torchvision==0.9.1,resnet18,2,True,False,1234,0,256,4995,3127.986358642578,0.6261585453251103,0.6259825007216231,0.00017604460348715414,/home/satya-local/scratch/satya-local//imagenet_torchvision
+PyTorch - torch==1.8.1+cu111 torchvision==0.9.1,resnet18,4,True,False,1234,0,256,4995,3161.3324677944183,0.6328714434687679,0.6326674994047697,0.00020394406399808012,/home/satya-local/scratch/satya-local//imagenet_torchvision
+PyTorch - torch==1.8.1+cu111 torchvision==0.9.1,resnet18,6,True,False,1234,0,256,4995,929.1764814853668,0.1859897626890196,0.18582293440749098,0.0001668282815285989,/home/satya-local/scratch/satya-local//imagenet_torchvision
+PyTorch - torch==1.8.1+cu111 torchvision==0.9.1,resnet18,8,True,False,1234,0,256,4995,697.5597250461578,0.13961405052437081,0.1394464451748807,0.0001676053494901151,/home/satya-local/scratch/satya-local//imagenet_torchvision
+PyTorch - torch==1.8.1+cu111 torchvision==0.9.1,resnet18,16,True,False,1234,0,256,4995,363.64070892333984,0.07274700972411009,0.07258628056691335,0.00016072915719674753,/home/satya-local/scratch/satya-local//imagenet_torchvision
+PyTorch - torch==1.8.1+cu111 torchvision==0.9.1,resnet18,32,True,False,1234,0,256,4995,236.46383357048035,0.04725587561323836,0.046943668655685715,0.0003122069575526454,/home/satya-local/scratch/satya-local//imagenet_torchvision
