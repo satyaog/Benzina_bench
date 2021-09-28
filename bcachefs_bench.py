@@ -3,7 +3,7 @@ import io
 import torch.utils.data
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
-from benzina.bcachefs import BCacheFS, Cursor
+from bcachefs import BCacheFS, Cursor
 from jug import TaskGenerator
 from PIL import Image
 from torch.utils.data import Dataset, DataLoader

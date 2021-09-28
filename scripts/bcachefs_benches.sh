@@ -81,12 +81,14 @@ fi
 MACHINE_NAME=$(hostname | grep -o "[^\.]*" | head -1)
 
 mkdir -p results/${MACHINE_NAME}
+touch results/${MACHINE_NAME}/benzina_measures.csv
 touch results/${MACHINE_NAME}/bcachefs_measures.csv
 touch results/${MACHINE_NAME}/torchvision_measures.csv
 
 rm -f results/${MACHINE_NAME}/env
 echo "# BENCH COMMIT HASH:" $(git rev-parse HEAD) > results/${MACHINE_NAME}/env
-echo "# BCACHEFS COMMIT HASH:" $(python3 -m pip freeze | grep -o "benzcachefs.*") >> results/${MACHINE_NAME}/env
+echo "# BCACHEFS COMMIT HASH:" $(python3 -m pip freeze | grep -o "^bcachefs.*") >> results/${MACHINE_NAME}/env
+echo "# BENZINA COMMIT HASH:" $(python3 -m pip freeze | grep -o "^benzina.*") >> results/${MACHINE_NAME}/env
 # Trim the trailing ".server.mila.quebec"
 echo "# MACHINE NAME:" ${MACHINE_NAME} >> results/${MACHINE_NAME}/env
 echo "# CPU:" $(cat /proc/cpuinfo | grep "model name" | sort | uniq) >> results/${MACHINE_NAME}/env
@@ -112,6 +114,20 @@ for workers in 1 2 4 6 8 16 32; do
 			continue
 		fi
 
+		ln -sf results/${MACHINE_NAME}/benzina_measures.csv measures.csv
+		jug ${cmd} -- benzina_bench.py \
+			--workers=1 \
+			--epochs=1 \
+			--batch-size=${batch_size} \
+			--batches=${batches} \
+			--seed=1234 \
+			--gpu=0 \
+			${dl_only} \
+			${sequence} \
+			${_ds_dir}/imagenet_benzina/ilsvrc2012.img \
+			"$(echo $(grep -o "^benzina.*" results/${MACHINE_NAME}/env))" >> benzina_bench.out 2>> benzina_bench.err \
+			|| [[ "${cmd}" == "status" ]]
+
 		ln -sf results/${MACHINE_NAME}/bcachefs_measures.csv measures.csv
 		jug ${cmd} -- bcachefs_bench.py \
 			--workers=${workers} \
@@ -123,7 +139,7 @@ for workers in 1 2 4 6 8 16 32; do
 			${dl_only} \
 			${sequence} \
 			${_ds_dir}/imagenet_bcachefs/imagenet_bcachefs.img \
-			"$(echo $(grep "benzcachefs" results/${MACHINE_NAME}/env))" >> bcachefs_bench.out 2>> bcachefs_bench.err \
+			"$(echo $(grep -o "^bcachefs.*" results/${MACHINE_NAME}/env))" >> bcachefs_bench.out 2>> bcachefs_bench.err \
 			|| [[ "${cmd}" == "status" ]]
 
 		ln -sf results/${MACHINE_NAME}/torchvision_measures.csv measures.csv
@@ -137,7 +153,7 @@ for workers in 1 2 4 6 8 16 32; do
 			${dl_only} \
 			${sequence} \
 			${_ds_dir}/imagenet_torchvision \
-			"$(echo $(grep "torch" results/${MACHINE_NAME}/env))" >> torchvision_bench.out 2>> torchvision_bench.err \
+			"$(echo $(grep -o "^torch.*" results/${MACHINE_NAME}/env))" >> torchvision_bench.out 2>> torchvision_bench.err \
 			|| [[ "${cmd}" == "status" ]]
 	done
 	done
