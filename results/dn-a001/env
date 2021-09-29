@@ -1,4 +1,4 @@
-# BENCH COMMIT HASH: 588d8e24ce0713a5d6dcc4eb2aa57882a8e44d8a
+# BENCH COMMIT HASH: 5d58222b5a2498f4e2de3107e9312ecb76fee0eb
 # BCACHEFS COMMIT HASH: bcachefs @ git+https://github.com/mila-iqia/bcachefs.git@da873cb16cfd7345d0a1fd4291f11faa7cb750db
 # BENZINA COMMIT HASH: benzina==0.0.5.dev0
 # MACHINE NAME: dn-a001
