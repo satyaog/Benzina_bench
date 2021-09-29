@@ -1,0 +1,3 @@
+data_loader,model,workers,dl_only,sequence,seed,epoch,batch_size,batches_cnt,epoch_time,batch_time,data_time,train_time,data_path
+Benzina - e250818a599d0d6ee1183b2301692fc3feca3397,resnet18,1,True,False,1234,0,256,4995,928.9539470672607,0.1856637264037872,0.18554836956707685,0.00011535683671036759,/home/satya-local/scratch/satya-local//imagenet_benzina/ilsvrc2012.img
+Benzina - e250818a599d0d6ee1183b2301692fc3feca3397,resnet18,1,True,True,1234,0,256,4995,932.1282069683075,0.18629843876049207,0.18618613821608168,0.00011230054441037718,/home/satya-local/scratch/satya-local//imagenet_benzina/ilsvrc2012.img

@@ -1,5 +1,6 @@
-# BENCH COMMIT HASH: 568c92b4a354b027b3389be16a23445d76d7bf18
-# BCACHEFS COMMIT HASH: benzcachefs @ git+https://github.com/mila-iqia/benzcachefs.git@3e9fe4a191aad77f2f1f62ef31436417c2aacd5e
+# BENCH COMMIT HASH: 588d8e24ce0713a5d6dcc4eb2aa57882a8e44d8a
+# BCACHEFS COMMIT HASH: bcachefs @ git+https://github.com/mila-iqia/bcachefs.git@da873cb16cfd7345d0a1fd4291f11faa7cb750db
+# BENZINA COMMIT HASH: benzina==0.0.5.dev0
 # MACHINE NAME: dn-a001
 # CPU: model name : AMD EPYC 7502 32-Core Processor
 # GPU: Product Name : RTX A6000
@@ -10,7 +11,9 @@ async-generator==1.10
 attrs==20.2.0
 backcall==0.2.0
 batchspawner==1.1.0.dev0
-benzcachefs @ git+https://github.com/mila-iqia/benzcachefs.git@3e9fe4a191aad77f2f1f62ef31436417c2aacd5e
+bcachefs @ git+https://github.com/mila-iqia/bcachefs.git@da873cb16cfd7345d0a1fd4291f11faa7cb750db
+benzina==0.0.5.dev0
+bitstring==3.1.9
 bleach==3.2.1
 boto==2.49.0
 certifi==2020.6.20
@@ -31,6 +34,7 @@ GitPython==3.1.18
 humanize==3.11.0
 idna==2.10
 importlib-metadata==4.8.1
+iniconfig==1.1.1
 ipykernel==5.3.4
 ipython==7.18.1
 ipython-genutils==0.2.0
@@ -57,13 +61,16 @@ keyring==23.1.0
 keyrings.alt==4.1.0
 Mako==1.1.3
 MarkupSafe==1.1.1
+meson==0.59.2
 mistune==0.8.4
 mock==4.0.3
+more-itertools==8.10.0
 msgpack==1.0.2
 nbclient==0.5.0
 nbconvert==6.0.6
 nbformat==5.0.7
 nest-asyncio==1.4.1
+ninja==1.10.2
 notebook==6.1.4
 numpy==1.21.1
 oauthlib==3.1.0
@@ -75,9 +82,12 @@ patool==1.12
 pexpect==4.8.0
 pickleshare==0.7.5
 Pillow==8.3.1
+pluggy==0.13.1
 prometheus-client==0.8.0
 prompt-toolkit==3.0.7
 ptyprocess==0.6.0
+py==1.10.0
+pybenzinaparse @ git+https://github.com/satyaog/pybenzinaparse.git@ff97e5b26555afee7a0ceaf9b0bd1a7e92374be3
 pycparser==2.20
 PyGithub==1.55
 Pygments==2.7.1
@@ -86,6 +96,7 @@ PyNaCl==1.4.0
 pyOpenSSL==19.1.0
 pyparsing==2.4.7
 pyrsistent==0.17.3
+pytest==6.0.1
 python-dateutil==2.8.1
 python-editor==1.0.4
 python-json-logger==2.0.0
@@ -103,6 +114,7 @@ smmap==4.0.0
 SQLAlchemy==1.3.19
 terminado==0.9.1
 testpath==0.4.4
+toml==0.10.2
 torch==1.8.1+cu111
 torchvision==0.9.1
 tornado==6.0.4
