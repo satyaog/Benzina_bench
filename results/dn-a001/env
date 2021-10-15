@@ -1,6 +1,5 @@
-# BENCH COMMIT HASH: 0745d5805368eded2134f3ae574ea0751662b08c
-# BCACHEFS COMMIT HASH: bcachefs @ git+https://github.com/mila-iqia/bcachefs.git@da873cb16cfd7345d0a1fd4291f11faa7cb750db
-# BENZINA COMMIT HASH: benzina @ git+https://github.com/satyaog/Benzina.git@510e9f99054d09e8a16bff6edb872e90de78e13e
+# BENCH COMMIT HASH: 8aeaa158fdc95166f496bd6e5e9b66f4a3a1efbe
+# BCACHEFS COMMIT HASH: bcachefs @ git+https://github.com/mila-iqia/bcachefs.git@eebafd10deb281ad7687519905fa8e5c2c587f2c
 # MACHINE NAME: dn-a001
 # CPU: model name : AMD EPYC 7502 32-Core Processor
 # GPU: Product Name : RTX A6000
@@ -11,11 +10,12 @@ async-generator==1.10
 attrs==20.2.0
 backcall==0.2.0
 batchspawner==1.1.0.dev0
-bcachefs @ git+https://github.com/mila-iqia/bcachefs.git@da873cb16cfd7345d0a1fd4291f11faa7cb750db
-benzina @ git+https://github.com/satyaog/Benzina.git@510e9f99054d09e8a16bff6edb872e90de78e13e
+bcachefs @ git+https://github.com/mila-iqia/bcachefs.git@eebafd10deb281ad7687519905fa8e5c2c587f2c
+benzina==0.0.6.dev0
 bitstring==3.1.9
 bleach==3.2.1
 boto==2.49.0
+cached-property==1.5.2
 certifi==2020.6.20
 certipy==0.1.3
 cffi==1.14.3
@@ -24,14 +24,15 @@ cryptography==3.1.1
 datalad==0.11.8
 decorator==4.4.2
 defusedxml==0.6.0
-Deprecated==1.2.12
+Deprecated==1.2.13
 distlib==0.3.1
 entrypoints==0.3
 fasteners==0.16.3
 filelock==3.0.12
 gitdb==4.0.7
-GitPython==3.1.18
-humanize==3.11.0
+GitPython==3.1.24
+h5py==3.4.0
+humanize==3.12.0
 idna==2.10
 importlib-metadata==4.8.1
 iniconfig==1.1.1
@@ -43,7 +44,7 @@ iso8601==0.1.16
 jedi==0.17.2
 jeepney==0.7.1
 Jinja2==2.11.2
-jsmin==2.2.2
+jsmin==3.0.0
 json5==0.9.5
 jsonschema==3.2.0
 Jug==2.1.1
@@ -57,7 +58,7 @@ jupyterlab==2.2.8
 jupyterlab-pygments==0.1.2
 jupyterlab-server==1.2.0
 jupyterlmod==2.0.0
-keyring==23.1.0
+keyring==23.2.1
 keyrings.alt==4.1.0
 Mako==1.1.3
 MarkupSafe==1.1.1
@@ -81,7 +82,7 @@ parso==0.7.1
 patool==1.12
 pexpect==4.8.0
 pickleshare==0.7.5
-Pillow==8.3.1
+Pillow==8.3.2
 pluggy==0.13.1
 prometheus-client==0.8.0
 prompt-toolkit==3.0.7
@@ -91,7 +92,7 @@ pybenzinaparse @ git+https://github.com/satyaog/pybenzinaparse.git@ff97e5b26555a
 pycparser==2.20
 PyGithub==1.55
 Pygments==2.7.1
-PyJWT==2.1.0
+PyJWT==2.2.0
 PyNaCl==1.4.0
 pyOpenSSL==19.1.0
 pyparsing==2.4.7
@@ -118,7 +119,7 @@ toml==0.10.2
 torch==1.8.1+cu111
 torchvision==0.9.1
 tornado==6.0.4
-tqdm==4.62.2
+tqdm==4.62.3
 traitlets==5.0.4
 typing-extensions==3.10.0.0
 urllib3==1.25.10
@@ -127,5 +128,5 @@ wcwidth==0.2.5
 webencodings==0.5.1
 Whoosh==2.7.4
 widgetsnbextension==3.5.1
-wrapt==1.12.1
+wrapt==1.13.1
 zipp==3.0.0
