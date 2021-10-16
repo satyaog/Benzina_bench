@@ -139,7 +139,9 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
     # switch to train mode
     model.train()
 
+    begin = time.time()
     batch_iterator = iter(train_loader)
+    print(f"Create loader iterator: {time.time() - begin}")
     try:
         len_loader = len(train_loader)
     except TypeError:
@@ -148,8 +150,10 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
     batches_cnt = args.batches if args.batches else None
 
     # warm-up
+    begin = time.time()
     for i in range(10):
         next(batch_iterator)
+    print(f"Warm-up: {time.time() - begin}")
 
     begin = time.time()
     end = begin

@@ -113,7 +113,7 @@ for workers in 1 2 4 6 8 16 32; do
 		fi
 
 		ln -sf results/${MACHINE_NAME}/bcachefs_drd_measures.csv measures.csv
-		jug ${cmd} -- bcachefs_drd_bench.py \
+		{ time jug ${cmd} -- bcachefs_drd_bench.py \
 			--workers=${workers} \
 			--epochs=1 \
 			--batch-size=${batch_size} \
@@ -123,11 +123,11 @@ for workers in 1 2 4 6 8 16 32; do
 			${dl_only} \
 			${sequence} \
 			${_ds_dir}/diabetic-retinopathy-detection_bcachefs/*.img \
-			"$(echo $(grep -o "^bcachefs.*" results/${MACHINE_NAME}/env))" >> bcachefs_drd_bench.out 2>> bcachefs_drd_bench.err \
+			"$(echo $(grep -o "^bcachefs.*" results/${MACHINE_NAME}/env))" >> bcachefs_drd_bench.out 2>> bcachefs_drd_bench.err ; } 2>> bcachefs_drd_bench.out \
 			|| [[ "${cmd}" == "status" ]]
 
 		ln -sf results/${MACHINE_NAME}/hdf5_drd_measures.csv measures.csv
-		jug ${cmd} -- hdf5_drd_bench.py \
+		{ time jug ${cmd} -- hdf5_drd_bench.py \
 			--workers=${workers} \
 			--epochs=1 \
 			--batch-size=${batch_size} \
@@ -137,7 +137,7 @@ for workers in 1 2 4 6 8 16 32; do
 			${dl_only} \
 			${sequence} \
 			${_ds_dir}/diabetic-retinopathy-detection_hdf5/*.h5 \
-			"$(echo $(grep -o "^h5py.*" results/${MACHINE_NAME}/env))" >> hdf5_drd_bench.out 2>> hdf5_drd_bench.err \
+			"$(echo $(grep -o "^h5py.*" results/${MACHINE_NAME}/env))" >> hdf5_drd_bench.out 2>> hdf5_drd_bench.err ; } 2>> hdf5_drd_bench.out \
 			|| [[ "${cmd}" == "status" ]]
 	done
 	done
