@@ -1,6 +1,7 @@
 import csv
 import io
 import os
+import random
 
 import numpy as np
 import torch.utils.data
@@ -13,6 +14,8 @@ from torch.utils.data import Dataset, DataLoader
 
 from bench import main_worker, build_parser
 
+MAX_CHAN_CNT = 91
+
 
 def CachedFunction(f, *args, **kwargs):
     from jug import CachedFunction as _CachedFunction
@@ -23,9 +26,10 @@ def CachedFunction(f, *args, **kwargs):
 
 
 class BcachefsDataset(Dataset):
-    def __init__(self, bch_cursor: Cursor, labels_csv=None, transform=None,
-                 target_transform=None):
+    def __init__(self, bch_cursor: Cursor, labels_csv=None,
+                 channels=MAX_CHAN_CNT, transform=None, target_transform=None):
         self._cursor = bch_cursor
+        self._channels = channels
         self._labels_csv = labels_csv
         self.transform = transform
         self.target_transform = target_transform
@@ -42,9 +46,9 @@ class BcachefsDataset(Dataset):
         count = 1
         for d in shape:
             count *= d
-        sample = np.stack([np.frombuffer(self._cursor.read_file(f.inode),
+        sample = np.stack([np.frombuffer(self._cursor.read_file(sample[c].inode),
                                          dtype=dtype, count=count).reshape(shape)
-                           for f in sample])
+                           for c in self._channels])
 
         if self.transform is not None:
             sample = self.transform(sample)
@@ -83,16 +87,17 @@ class BcachefsDataset(Dataset):
         return instances
 
 
-def get_dataset(filename, split):
+def get_dataset(filename, split, channels):
     with Bcachefs(filename) as bchfs:
-        dataset = BcachefsDataset(bchfs.cd(split), "/trainLabels.csv")
+        dataset = BcachefsDataset(bchfs.cd(split), "/trainLabels.csv", channels)
     return dataset
 
 
 def make_dataloader(args):
     # Data loading code
     # Dataset
-    train_set = CachedFunction(get_dataset, args.data, "train")
+    channels = random.sample(list(range(MAX_CHAN_CNT)), args.chan_cnt)
+    train_set = CachedFunction(get_dataset, args.data, "train", channels)
 
     # Dataloaders
     train_sampler = torch.utils.data.SequentialSampler \
@@ -111,4 +116,9 @@ def main(args):
 
 
 parser = build_parser()
+parser.add_argument("-c", "--chan-cnt", default=MAX_CHAN_CNT, type=int,
+                    metavar="N",
+                    help=f"channels count (default: {MAX_CHAN_CNT}), this is "
+                          "the number of channels to be loaded from the image "
+                          "file")
 main(parser.parse_args())

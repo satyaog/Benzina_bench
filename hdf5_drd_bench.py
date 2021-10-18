@@ -1,4 +1,5 @@
 import io
+import random
 
 import h5py
 import torch.utils.data
@@ -10,10 +11,14 @@ from torch.utils.data import Dataset, DataLoader
 
 from bench import main_worker, build_parser
 
+MAX_CHAN_CNT = 91
+
 
 class HDF5Dataset(Dataset):
-    def __init__(self, path, transform=None, target_transform=None):
+    def __init__(self, path, channels=MAX_CHAN_CNT, transform=None,
+                 target_transform=None):
         self.fname = path
+        self.channels = channels
         self.transform = transform
         self.target_transform = target_transform
         self._file = None
@@ -26,7 +31,7 @@ class HDF5Dataset(Dataset):
         return self._file
 
     def __getitem__(self, index):
-        sample = self.file["images"][index]
+        sample = self.file["images"][index][self.channels, ...]
         try:
             target = self.file["labels"][index]
         except:
@@ -47,7 +52,8 @@ class HDF5Dataset(Dataset):
 def make_dataloader(args):
     # Data loading code
     # Dataset
-    train_set = HDF5Dataset(args.data)
+    channels = random.sample(list(range(MAX_CHAN_CNT)), args.chan_cnt)
+    train_set = HDF5Dataset(args.data, channels)
     train_set = torch.utils.data.Subset(train_set, range(256))
 
     # Dataloaders
@@ -67,4 +73,9 @@ def main(args):
 
 
 parser = build_parser()
+parser.add_argument("-c", "--chan-cnt", default=MAX_CHAN_CNT, type=int,
+                    metavar="N",
+                    help=f"channels count (default: {MAX_CHAN_CNT}), this is "
+                          "the number of channels to be loaded from the image "
+                          "file")
 main(parser.parse_args())

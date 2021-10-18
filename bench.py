@@ -13,8 +13,9 @@ import torchvision.models as models
 
 Measure = namedtuple("Measure", ["data_loader", "model", "workers", "dl_only",
                                  "sequence", "seed", "epoch", "batch_size",
-                                 "batches_cnt", "epoch_time", "batch_time",
-                                 "data_time", "train_time", "data_path"])
+                                 "batches_cnt", "chan_cnt", "epoch_time",
+                                 "batch_time", "data_time", "train_time",
+                                 "data_path"])
 
 
 def build_parser():
@@ -113,6 +114,11 @@ def main_worker(make_dataloader, dataloader_name, args):
 
     train_loader = make_dataloader(args)
 
+    try:
+        chan_cnt = args.chan_cnt
+    except AttributeError:
+        chan_cnt = "N/A"
+
     for epoch in range(args.epochs):
         # train for one epoch
         epoch_time, batch_time, data_time, train_time = \
@@ -124,7 +130,7 @@ def main_worker(make_dataloader, dataloader_name, args):
                         workers=args.workers, dl_only=args.dl_only,
                         sequence=args.sequence, seed=args.seed, epoch=epoch,
                         batch_size=args.batch_size,
-                        batches_cnt=batch_time.count,
+                        batches_cnt=batch_time.count, chan_cnt=chan_cnt,
                         epoch_time=epoch_time.avg, batch_time=batch_time.avg,
                         data_time=data_time.avg, train_time=train_time.avg,
                         data_path=args.data)]) + '\n')
