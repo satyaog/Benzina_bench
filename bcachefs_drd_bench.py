@@ -85,7 +85,8 @@ class BcachefsDataset(Dataset):
 
 def get_dataset(filename, split):
     with Bcachefs(filename) as bchfs:
-        return BcachefsDataset(bchfs.cd(split), "/trainLabels.csv")
+        dataset = BcachefsDataset(bchfs.cd(split), "/trainLabels.csv")
+    return dataset
 
 
 def make_dataloader(args):

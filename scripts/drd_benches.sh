@@ -122,7 +122,7 @@ for workers in 1 2 4 6 8 16 32; do
 			--gpu=0 \
 			${dl_only} \
 			${sequence} \
-			${_ds_dir}/diabetic-retinopathy-detection_bcachefs/*.img \
+			${_ds_dir}/diabetic-retinopathy-detection_bcachefs_single_img/*.img \
 			"$(echo $(grep -o "^bcachefs.*" results/${MACHINE_NAME}/env))" >> bcachefs_drd_bench.out 2>> bcachefs_drd_bench.err ; } 2>> bcachefs_drd_bench.out \
 			|| [[ "${cmd}" == "status" ]]
 
