@@ -138,7 +138,7 @@ for workers in 1 2 4 6 8 16 32; do
 			--gpu=0 \
 			${dl_only} \
 			${sequence} \
-			${_ds_dir}/diabetic-retinopathy-detection_hdf5_single_img/*.h5 \
+			${_ds_dir}/diabetic-retinopathy-detection_hdf5/*.h5 \
 			"$(echo $(grep -o "^h5py.*" results/${MACHINE_NAME}/env))" >> hdf5_drd_bench.out 2>> hdf5_drd_bench.err ; } 2>> hdf5_drd_bench.out \
 			|| [[ "${cmd}" == "status" ]]
 	done
