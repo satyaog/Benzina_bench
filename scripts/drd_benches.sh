@@ -95,7 +95,7 @@ pip freeze >> results/${MACHINE_NAME}/env
 
 for cmd in "status" "execute"; do
 for batches in ${_batches}; do
-for workers in 1 2 4 6 8 16 32; do
+for workers in 1 2 4 6 8 12 16 32; do
 	if [[ "${workers}" -gt "${_max_workers}" ]]
 	then
 		continue
