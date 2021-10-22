@@ -117,7 +117,7 @@ for workers in 1 2 4 6 8 12 16 32; do
 			--workers=${workers} \
 			--epochs=1 \
 			--batch-size=${batch_size} \
-			--chan-cnt=3 \
+			--chan-cnt=91 \
 			--batches=${batches} \
 			--seed=1234 \
 			--gpu=0 \
@@ -132,7 +132,7 @@ for workers in 1 2 4 6 8 12 16 32; do
 			--workers=${workers} \
 			--epochs=1 \
 			--batch-size=${batch_size} \
-			--chan-cnt=3 \
+			--chan-cnt=91 \
 			--batches=${batches} \
 			--seed=1234 \
 			--gpu=0 \
