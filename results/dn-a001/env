@@ -1,5 +1,5 @@
-# BENCH COMMIT HASH: d1938918a1efd262184d2ab874147199acbac818
-# BCACHEFS COMMIT HASH: bcachefs @ git+https://github.com/mila-iqia/bcachefs.git@eebafd10deb281ad7687519905fa8e5c2c587f2c
+# BENCH COMMIT HASH: 5f76367db341be0735d577ecddefec98ad449576
+# BCACHEFS COMMIT HASH: bcachefs @ git+https://github.com/mila-iqia/bcachefs.git@a816de6239e52d87322a6c9459c283033883ecb0
 # MACHINE NAME: dn-a001
 # CPU: model name : AMD EPYC 7502 32-Core Processor
 # GPU: Product Name : RTX A6000
@@ -10,7 +10,7 @@ async-generator==1.10
 attrs==20.2.0
 backcall==0.2.0
 batchspawner==1.1.0.dev0
-bcachefs @ git+https://github.com/mila-iqia/bcachefs.git@eebafd10deb281ad7687519905fa8e5c2c587f2c
+bcachefs @ git+https://github.com/mila-iqia/bcachefs.git@a816de6239e52d87322a6c9459c283033883ecb0
 benzina==0.0.6.dev0
 bitstring==3.1.9
 bleach==3.2.1
