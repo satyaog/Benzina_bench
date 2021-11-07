@@ -4,6 +4,7 @@ import os
 import random
 
 import numpy as np
+import torch
 import torch.utils.data
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
@@ -49,6 +50,7 @@ class BcachefsDataset(Dataset):
         sample = np.stack([np.frombuffer(self._cursor.read_file(sample[c].inode),
                                          dtype=dtype, count=count).reshape(shape)
                            for c in self._channels])
+        sample = torch.tensor(sample, dtype=torch.float)
 
         if self.transform is not None:
             sample = self.transform(sample)
@@ -89,7 +91,12 @@ class BcachefsDataset(Dataset):
 
 def get_dataset(filename, split, channels):
     with Bcachefs(filename) as bchfs:
-        dataset = BcachefsDataset(bchfs.cd(split), "/trainLabels.csv", channels)
+        dataset = BcachefsDataset(bchfs.cd(split), "/trainLabels.csv", channels,
+                transform=transforms.Compose([
+                    transforms.GaussianBlur(7, sigma=(0.1, 2.0)),
+                    transforms.RandomHorizontalFlip(0.5),
+                    transforms.RandomRotation([-180., +180.])
+                ]))
     return dataset
 
 

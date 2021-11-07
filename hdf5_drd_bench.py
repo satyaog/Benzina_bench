@@ -2,6 +2,7 @@ import io
 import random
 
 import h5py
+import torch
 import torch.utils.data
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
@@ -36,6 +37,7 @@ class HDF5Dataset(Dataset):
             target = self.file["labels"][index]
         except:
             target = -1
+        sample = torch.tensor(sample, dtype=torch.float)
 
         if self.transform is not None:
             sample = self.transform(sample)
@@ -53,7 +55,12 @@ def make_dataloader(args):
     # Data loading code
     # Dataset
     channels = random.sample(list(range(MAX_CHAN_CNT)), args.chan_cnt)
-    train_set = HDF5Dataset(args.data, channels)
+    train_set = HDF5Dataset(args.data, channels,
+            transform=transforms.Compose([
+                transforms.GaussianBlur(7, sigma=(0.1, 2.0)),
+                transforms.RandomHorizontalFlip(0.5),
+                transforms.RandomRotation([-180., +180.])
+            ]))
     train_set = torch.utils.data.Subset(train_set, range(256))
 
     # Dataloaders
