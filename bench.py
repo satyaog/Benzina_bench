@@ -154,7 +154,7 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
     batches_cnt = args.batches if args.batches else None
 
     # warm-up
-    for i in range(10):
+    for i in range(1):
         next(batch_iterator)
 
     begin = time.time()

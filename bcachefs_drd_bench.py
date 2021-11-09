@@ -55,6 +55,8 @@ class BcachefsDataset(Dataset):
         if self.transform is not None:
             sample = self.transform(sample)
 
+        sample = torch.tensor(sample, dtype=torch.float16)
+
         if self.target_transform is not None:
             target = self.target_transform(target)
 

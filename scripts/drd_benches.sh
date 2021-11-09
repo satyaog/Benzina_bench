@@ -94,8 +94,9 @@ echo "# GPU:" $(nvidia-smi -q | grep "Product Name") >> results/${MACHINE_NAME}/
 pip freeze >> results/${MACHINE_NAME}/env
 
 for cmd in "status" "execute"; do
+for chan_cnt in 3 91; do
 for batches in ${_batches}; do
-for workers in 1 2 4 6 8 12 16 32; do
+for workers in 0 4 8 12; do
 	if [[ "${workers}" -gt "${_max_workers}" ]]
 	then
 		continue
@@ -113,37 +114,38 @@ for workers in 1 2 4 6 8 12 16 32; do
 		fi
 
 		ln -sf results/${MACHINE_NAME}/bcachefs_drd_measures.csv measures.csv
-		{ time jug ${cmd} -- bcachefs_drd_bench.py \
+		jug ${cmd} -- bcachefs_drd_bench.py \
 			--workers=${workers} \
 			--epochs=1 \
 			--batch-size=${batch_size} \
-			--chan-cnt=91 \
+			--chan-cnt=${chan_cnt} \
 			--batches=${batches} \
 			--seed=1234 \
 			--gpu=0 \
 			${dl_only} \
 			${sequence} \
 			${_ds_dir}/diabetic-retinopathy-detection_bcachefs/*.img \
-			"$(echo $(grep -o "^bcachefs.*" results/${MACHINE_NAME}/env))" >> bcachefs_drd_bench.out 2>> bcachefs_drd_bench.err ; } 2>> bcachefs_drd_bench.out \
+			"$(echo $(grep -o "^bcachefs.*" results/${MACHINE_NAME}/env))" >> bcachefs_drd_bench.out 2>> bcachefs_drd_bench.err \
 			|| [[ "${cmd}" == "status" ]]
 
 		ln -sf results/${MACHINE_NAME}/hdf5_drd_measures.csv measures.csv
-		{ time jug ${cmd} -- hdf5_drd_bench.py \
+		jug ${cmd} -- hdf5_drd_bench.py \
 			--workers=${workers} \
 			--epochs=1 \
 			--batch-size=${batch_size} \
-			--chan-cnt=91 \
+			--chan-cnt=${chan_cnt} \
 			--batches=${batches} \
 			--seed=1234 \
 			--gpu=0 \
 			${dl_only} \
 			${sequence} \
 			${_ds_dir}/diabetic-retinopathy-detection_hdf5/*.h5 \
-			"$(echo $(grep -o "^h5py.*" results/${MACHINE_NAME}/env))" >> hdf5_drd_bench.out 2>> hdf5_drd_bench.err ; } 2>> hdf5_drd_bench.out \
+			"$(echo $(grep -o "^h5py.*" results/${MACHINE_NAME}/env))" >> hdf5_drd_bench.out 2>> hdf5_drd_bench.err \
 			|| [[ "${cmd}" == "status" ]]
 	done
 	done
 	done
+done
 done
 done
 done
