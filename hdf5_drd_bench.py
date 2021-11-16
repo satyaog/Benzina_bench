@@ -16,14 +16,14 @@ MAX_CHAN_CNT = 91
 
 
 class HDF5Dataset(Dataset):
-    def __init__(self, path, channels=MAX_CHAN_CNT, transform=None,
+    def __init__(self, path, channels=tuple(range(MAX_CHAN_CNT)), transform=None,
                  target_transform=None):
         self.fname = path
-        self.channels = channels
+        self.channels = sorted(channels)
         self.transform = transform
         self.target_transform = target_transform
         self._file = None
-        self._len = h5py.File(self.fname, 'r')['images'].shape[0]
+        self._datasets = self.find_datasets()
 
     @property
     def file(self):
@@ -32,11 +32,12 @@ class HDF5Dataset(Dataset):
         return self._file
 
     def __getitem__(self, index):
-        sample = self.file["images"][index][self.channels, ...]
-        try:
-            target = self.file["labels"][index]
-        except:
-            target = -1
+        dataset = self.file[self._datasets[index // 3]]
+        i = index % 3
+        sample = dataset[i, self.channels, ...]
+        target = dataset.attrs["labels"][i]
+        roi_bb = dataset.attrs["roi_bounding_box"][i]
+        sample = sample[:, roi_bb[0]:roi_bb[0]+roi_bb[2], roi_bb[1]:roi_bb[1]+roi_bb[3]]
         sample = torch.tensor(sample, dtype=torch.float)
 
         if self.transform is not None:
@@ -50,7 +51,15 @@ class HDF5Dataset(Dataset):
         return sample, target
 
     def __len__(self):
-        return self._len
+        return len(self._datasets) * 3
+
+    def find_datasets(self):
+        h5f = h5py.File(self.fname, 'r')
+        instances = []
+        for fold in h5f.values():
+            for dataset in fold.values():
+                instances.append(dataset.name)
+        return instances
 
 
 def make_dataloader(args):
@@ -63,7 +72,6 @@ def make_dataloader(args):
                 transforms.RandomHorizontalFlip(0.5),
                 transforms.RandomRotation([-180., +180.])
             ]))
-    train_set = torch.utils.data.Subset(train_set, range(256))
 
     # Dataloaders
     train_sampler = torch.utils.data.SequentialSampler \

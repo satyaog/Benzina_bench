@@ -26,12 +26,33 @@ def CachedFunction(f, *args, **kwargs):
         return _CachedFunction(f, *args, **kwargs)
 
 
+def load_array(cursor: Cursor, inode, fmt):
+    (dtype, _, chunk) = fmt
+    count = 1
+    for d in chunk:
+        count *= d
+    return np.frombuffer(cursor.read_file(inode),
+                         dtype=dtype, count=count).reshape(chunk)
+
+
+def find_attrs(cursor: Cursor):
+    attrs = {}
+    for dirent in cursor.ls(".attrs"):
+        if dirent.is_file:
+            continue
+        fmt = bytes(cursor.read_file(os.path.join(".attrs", dirent.name, "format"))).split(b'\n')
+        fmt = (fmt[0], [int(d) for d in fmt[1].split(b',')],
+               [int(d) for d in fmt[2].split(b',')])
+        attr_dirent = cursor.find_dirent(os.path.join(".attrs", dirent.name, "array.rec"))
+        attrs[dirent.name] = attr_dirent, fmt
+    return attrs
+
+
 class BcachefsDataset(Dataset):
-    def __init__(self, bch_cursor: Cursor, labels_csv=None,
-                 channels=MAX_CHAN_CNT, transform=None, target_transform=None):
-        self._cursor = bch_cursor
+    def __init__(self, cursor: Cursor, channels=tuple(range(MAX_CHAN_CNT)),
+                 transform=None, target_transform=None):
+        self._cursor = cursor
         self._channels = channels
-        self._labels_csv = labels_csv
         self.transform = transform
         self.target_transform = target_transform
         self._samples = self.find_samples()
@@ -43,13 +64,18 @@ class BcachefsDataset(Dataset):
         if self._cursor.closed:
             self._cursor.open()
 
-        sample, target, (dtype, shape) = self._samples[index]
+        sample, (dtype, shape, chunk), (i, attrs) = self._samples[index]
         count = 1
-        for d in shape:
+        for d in chunk:
             count *= d
         sample = np.stack([np.frombuffer(self._cursor.read_file(sample[c].inode),
-                                         dtype=dtype, count=count).reshape(shape)
+                                         dtype=dtype, count=count).reshape(chunk)
                            for c in self._channels])
+        label_dirent, label_fmt = attrs["labels"]
+        target = load_array(self._cursor, label_dirent.inode, label_fmt)[i]
+        roi_bb_dirent, roi_bb_fmt = attrs["roi_bounding_box"]
+        roi_bb = load_array(self._cursor, roi_bb_dirent.inode, roi_bb_fmt)[i]
+        sample = sample[:, roi_bb[0]:roi_bb[0]+roi_bb[2], roi_bb[1]:roi_bb[1]+roi_bb[3]]
         sample = torch.tensor(sample, dtype=torch.float)
 
         if self.transform is not None:
@@ -63,37 +89,32 @@ class BcachefsDataset(Dataset):
         return sample, target
 
     def find_samples(self):
-        if self._labels_csv is not None:
-            with self._cursor as cursor, \
-                    cursor.read_file(self._labels_csv) as csvf:
-                csv_reader = csv.reader(bytes(csvf).rstrip(b"\n\x00").decode().split('\n'))
-            # Skip header
-            next(csv_reader)
-            images, classes = zip(*list(csv_reader))
-            classes = [int(c) for c in classes]
-            available_images = set([de.name for de in self._cursor.ls() if de.is_dir])
-            images, classes = zip(*[(i, c) for i, c in zip(images, classes) if i in available_images])
-        else:
-            images = [de.name for de in self._cursor.ls() if de.is_dir]
-            classes = [-1] * len(images)
-
         instances = []
+        cwd = self._cursor.pwd
         with self._cursor as cursor:
-            for image, class_idx in zip(images, classes):
-                for _, _, files in sorted(self._cursor.walk(image)):
-                    format = bytes(cursor.read_file(os.path.join(image, "format"))).split(b'\n')
-                    format = (format[0], [int(d) for d in format[1].split(b',')])
-                    item = (sorted((_f for _f in files if _f.name != "format"),
-                                   key=lambda _f: _f.name),
-                            class_idx, format)
+            for root, _, files in sorted(cursor.walk()):
+                fmt_dirent = next((f for f in files if f.name == "format"), None)
+                if fmt_dirent is None or ".attrs" in root:
+                    continue
+                fmt = bytes(cursor.read_file(fmt_dirent.inode)).split(b'\n')
+                fmt = (fmt[0], [int(d) for d in fmt[1].split(b',')],
+                       [int(d) for d in fmt[2].split(b',')])
+                chunks = sorted((_f for _f in files if _f is not fmt_dirent),
+                                key=lambda _f: _f.name)
+                cursor.cd(root)
+                attrs = find_attrs(cursor)
+                cursor.cd(cwd)
+                num_imgs, num_chan = fmt[1][0:2]
+                for i in range(num_imgs):
+                    item = chunks[i*num_chan:(i+1)*num_chan], fmt, (i, attrs)
                     instances.append(item)
 
         return instances
 
 
-def get_dataset(filename, split, channels):
+def get_dataset(filename, channels):
     with Bcachefs(filename) as bchfs:
-        dataset = BcachefsDataset(bchfs.cd(split), "/trainLabels.csv", channels,
+        dataset = BcachefsDataset(bchfs.cd(), channels,
                 transform=transforms.Compose([
                     transforms.GaussianBlur(7, sigma=(0.1, 2.0)),
                     transforms.RandomHorizontalFlip(0.5),
@@ -106,7 +127,7 @@ def make_dataloader(args):
     # Data loading code
     # Dataset
     channels = random.sample(list(range(MAX_CHAN_CNT)), args.chan_cnt)
-    train_set = CachedFunction(get_dataset, args.data, "train", channels)
+    train_set = CachedFunction(get_dataset, args.data, channels)
 
     # Dataloaders
     train_sampler = torch.utils.data.SequentialSampler \
