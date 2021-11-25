@@ -115,6 +115,7 @@ for workers in 0 4 8 12; do
 
 		ln -sf results/${MACHINE_NAME}/bcachefs_drd_measures.csv measures.csv
 		jug ${cmd} -- bcachefs_drd_bench.py \
+			--arch="mobilenet_v2" \
 			--workers=${workers} \
 			--epochs=1 \
 			--batch-size=${batch_size} \
@@ -130,6 +131,7 @@ for workers in 0 4 8 12; do
 
 		ln -sf results/${MACHINE_NAME}/hdf5_drd_measures.csv measures.csv
 		jug ${cmd} -- hdf5_drd_bench.py \
+			--arch="mobilenet_v2" \
 			--workers=${workers} \
 			--epochs=1 \
 			--batch-size=${batch_size} \
