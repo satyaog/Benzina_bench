@@ -90,6 +90,7 @@ def main_worker(make_dataloader, dataloader_name, args):
 
     torch.cuda.set_device(args.gpu)
     model = model.cuda(args.gpu)
+    model.half()
 
     # define loss function (criterion) and optimizer
     criterion = nn.CrossEntropyLoss().cuda(args.gpu)
@@ -112,7 +113,7 @@ def main_worker(make_dataloader, dataloader_name, args):
         with open("measures.csv", 'a') as measures_file:
             measures_file.write(header)
 
-    train_loader = make_dataloader(args)
+    train_loader, val_loader = make_dataloader(args)
 
     try:
         chan_cnt = args.chan_cnt
@@ -120,13 +121,27 @@ def main_worker(make_dataloader, dataloader_name, args):
         chan_cnt = "N/A"
 
     for epoch in range(args.epochs):
-        # train for one epoch
+        # train and validate for one epoch
         epoch_time, batch_time, data_time, train_time = \
             train(train_loader, model, criterion, optimizer, epoch, args)
 
         with open("measures.csv", 'a') as measures_file:
             measures_file.write(','.join([str(field) for field in
                 Measure(data_loader=dataloader_name, model=args.arch,
+                        workers=args.workers, dl_only=args.dl_only,
+                        sequence=args.sequence, seed=args.seed, epoch=epoch,
+                        batch_size=args.batch_size,
+                        batches_cnt=batch_time.count, chan_cnt=chan_cnt,
+                        epoch_time=epoch_time.avg, batch_time=batch_time.avg,
+                        data_time=data_time.avg, train_time=train_time.avg,
+                        data_path=args.data)]) + '\n')
+
+        epoch_time, batch_time, data_time, train_time = \
+            validate(val_loader, model, criterion, args)
+
+        with open("measures.csv", 'a') as measures_file:
+            measures_file.write(','.join([str(field) for field in
+                Measure(data_loader=f"validate - {dataloader_name}", model=args.arch,
                         workers=args.workers, dl_only=args.dl_only,
                         sequence=args.sequence, seed=args.seed, epoch=epoch,
                         batch_size=args.batch_size,
@@ -152,10 +167,6 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
         len_loader = "NA"
 
     batches_cnt = args.batches if args.batches else None
-
-    # warm-up
-    for i in range(1):
-        next(batch_iterator)
 
     begin = time.time()
     end = begin
@@ -203,6 +214,67 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
     print('Epoch time: {time:.3f}'.format(time=epoch_time.avg))
 
     return epoch_time, batch_time, data_time, train_time
+
+
+def validate(val_loader, model, criterion, args):
+    epoch_time = AverageMeter()
+    batch_time = AverageMeter()
+    data_time = AverageMeter()
+    val_time = AverageMeter()
+
+    # switch to train mode
+    model.eval()
+
+    batch_iterator = iter(val_loader)
+    try:
+        len_loader = len(val_loader)
+    except TypeError:
+        len_loader = "NA"
+
+    batches_cnt = args.batches if args.batches else None
+
+    with torch.no_grad():
+        begin = time.time()
+        end = begin
+        for i, (images, target) in enumerate(batch_iterator):
+            # measure data loading time
+            data_time.update(time.time() - end)
+
+            if args.gpu is not None:
+                images = images.cuda(args.gpu, non_blocking=True)
+                target = target.cuda(args.gpu, non_blocking=True)
+            target = target.view((-1,))
+
+            if not args.dl_only:
+                # compute output
+                output = model(images)
+                loss = criterion(output, target)
+
+            # measure elapsed time
+            batch_time.update(time.time() - end)
+            val_time.update(batch_time.val - data_time.val)
+
+            end = time.time()
+
+            if i % args.print_freq == 0:
+                print('Epoch: [{0}][{1}/{2}]\t'
+                      'Batch time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
+                      'Waiting for data {data_time.val:.3f} '
+                      '({data_time.avg:.3f})\t'
+                      'Validating time {val_time.val:.3f} '
+                      '({val_time.avg:.3f})\t'
+                      .format(0, i, len_loader, batch_time=batch_time,
+                              data_time=data_time,
+                              val_time=val_time))
+
+            if batches_cnt is not None and i >= batches_cnt:
+                break
+
+    torch.cuda.synchronize()
+    epoch_time.update(time.time() - begin)
+    print('Epoch time: {time:.3f}'.format(time=epoch_time.avg))
+
+    return epoch_time, batch_time, data_time, val_time
 
 
 class AverageMeter(object):

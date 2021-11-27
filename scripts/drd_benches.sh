@@ -117,7 +117,7 @@ for workers in 0 4 8 12; do
 		jug ${cmd} -- bcachefs_drd_bench.py \
 			--arch="mobilenet_v2" \
 			--workers=${workers} \
-			--epochs=1 \
+			--epochs=5 \
 			--batch-size=${batch_size} \
 			--chan-cnt=${chan_cnt} \
 			--batches=${batches} \
@@ -125,7 +125,7 @@ for workers in 0 4 8 12; do
 			--gpu=0 \
 			${dl_only} \
 			${sequence} \
-			${_ds_dir}/diabetic-retinopathy-detection_bcachefs_folds/*.img \
+			${_ds_dir}/drd_bcachefs_folds/*.img \
 			"$(echo $(grep -o "^bcachefs.*" results/${MACHINE_NAME}/env))" >> bcachefs_drd_bench.out 2>> bcachefs_drd_bench.err \
 			|| [[ "${cmd}" == "status" ]]
 
@@ -133,7 +133,7 @@ for workers in 0 4 8 12; do
 		jug ${cmd} -- hdf5_drd_bench.py \
 			--arch="mobilenet_v2" \
 			--workers=${workers} \
-			--epochs=1 \
+			--epochs=5 \
 			--batch-size=${batch_size} \
 			--chan-cnt=${chan_cnt} \
 			--batches=${batches} \
@@ -141,7 +141,7 @@ for workers in 0 4 8 12; do
 			--gpu=0 \
 			${dl_only} \
 			${sequence} \
-			${_ds_dir}/diabetic-retinopathy-detection_hdf5_folds/*.h5 \
+			${_ds_dir}/drd_hdf5_folds/*.h5 \
 			"$(echo $(grep -o "^h5py.*" results/${MACHINE_NAME}/env))" >> hdf5_drd_bench.out 2>> hdf5_drd_bench.err \
 			|| [[ "${cmd}" == "status" ]]
 	done

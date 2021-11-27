@@ -9,12 +9,16 @@ import torch.utils.data
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 from bcachefs import Bcachefs, Cursor
+from bcachefs.bcachefs import DirEnt
 from jug import TaskGenerator
 from PIL import Image
 from torch.utils.data import Dataset, DataLoader
 
 from bench import main_worker, build_parser
 
+MAX_FOLDS_CNT = 3
+MAX_PATIENTS_PER_FOLDS = 65
+MAX_IMGS_PER_PATIENT = 3
 MAX_CHAN_CNT = 91
 
 
@@ -26,7 +30,9 @@ def CachedFunction(f, *args, **kwargs):
         return _CachedFunction(f, *args, **kwargs)
 
 
-def load_array(cursor: Cursor, inode, fmt):
+def read_array(cursor: Cursor, inode, fmt):
+    if isinstance(inode, DirEnt):
+        inode = inode.inode
     (dtype, _, chunk) = fmt
     count = 1
     for d in chunk:
@@ -35,16 +41,27 @@ def load_array(cursor: Cursor, inode, fmt):
                          dtype=dtype, count=count).reshape(chunk)
 
 
-def find_attrs(cursor: Cursor):
+def read_format(cursor: Cursor, inode):
+    if isinstance(inode, str):
+        inode = cursor.find_dirent(inode).inode
+    attrs = {}
+    fmt = bytes(cursor.read_file(inode)).split(b'\n')
+    fmt = (fmt[0], [int(d) for d in fmt[1].split(b',')],
+           [int(d) for d in fmt[2].split(b',')])
+    return fmt
+
+
+def read_attrs(cursor: Cursor):
     attrs = {}
     for dirent in cursor.ls(".attrs"):
         if dirent.is_file:
             continue
-        fmt = bytes(cursor.read_file(os.path.join(".attrs", dirent.name, "format"))).split(b'\n')
-        fmt = (fmt[0], [int(d) for d in fmt[1].split(b',')],
-               [int(d) for d in fmt[2].split(b',')])
-        attr_dirent = cursor.find_dirent(os.path.join(".attrs", dirent.name, "array.rec"))
-        attrs[dirent.name] = attr_dirent, fmt
+        try:
+            fmt = read_format(cursor, os.path.join(".attrs", dirent.name, "format"))
+            attr_dirent = cursor.find_dirent(os.path.join(".attrs", dirent.name, "arr.rec"))
+            attrs[dirent.name] = read_array(cursor, attr_dirent, fmt)
+        except ValueError:
+            pass
     return attrs
 
 
@@ -64,24 +81,22 @@ class BcachefsDataset(Dataset):
         if self._cursor.closed:
             self._cursor.open()
 
-        sample, (dtype, shape, chunk), (i, attrs) = self._samples[index]
+        (samples, (dtype, shape, chunk)), (target, roi_bbs) = self._samples[index]
+        sample_idx = random.randint(0, len(samples) - 1)
+        sample = samples[sample_idx]
+        roi_bb = roi_bbs[sample_idx]
         count = 1
         for d in chunk:
             count *= d
         sample = np.stack([np.frombuffer(self._cursor.read_file(sample[c].inode),
                                          dtype=dtype, count=count).reshape(chunk)
                            for c in self._channels])
-        label_dirent, label_fmt = attrs["labels"]
-        target = load_array(self._cursor, label_dirent.inode, label_fmt)[i]
-        roi_bb_dirent, roi_bb_fmt = attrs["roi_bounding_box"]
-        roi_bb = load_array(self._cursor, roi_bb_dirent.inode, roi_bb_fmt)[i]
         sample = sample[:, roi_bb[0]:roi_bb[0]+roi_bb[2], roi_bb[1]:roi_bb[1]+roi_bb[3]]
-        sample = torch.tensor(sample, dtype=torch.float)
 
         if self.transform is not None:
+            sample = torch.tensor(sample, dtype=torch.float)
             sample = self.transform(sample)
-
-        sample = torch.tensor(sample, dtype=torch.float16)
+            sample = sample.to(torch.float16, non_blocking=True)
 
         if self.target_transform is not None:
             target = self.target_transform(target)
@@ -96,38 +111,49 @@ class BcachefsDataset(Dataset):
                 fmt_dirent = next((f for f in files if f.name == "format"), None)
                 if fmt_dirent is None or ".attrs" in root:
                     continue
-                fmt = bytes(cursor.read_file(fmt_dirent.inode)).split(b'\n')
-                fmt = (fmt[0], [int(d) for d in fmt[1].split(b',')],
-                       [int(d) for d in fmt[2].split(b',')])
+                fmt = read_format(cursor, fmt_dirent.inode)
                 chunks = sorted((_f for _f in files if _f is not fmt_dirent),
                                 key=lambda _f: _f.name)
                 cursor.cd(root)
-                attrs = find_attrs(cursor)
+                attrs = read_attrs(cursor)
                 cursor.cd(cwd)
+
                 num_imgs, num_chan = fmt[1][0:2]
+                label = attrs.get("labels", [None])[0]
+                roi_bb = attrs["roi_bounding_box"]
+                items = []
                 for i in range(num_imgs):
-                    item = chunks[i*num_chan:(i+1)*num_chan], fmt, (i, attrs)
-                    instances.append(item)
+                    chunk_i = i*num_chan
+                    items.append(chunks[chunk_i:chunk_i+num_chan])
+                instances.append(((items, fmt), (label, roi_bb)))
 
         return instances
 
 
-def get_dataset(filename, channels):
-    with Bcachefs(filename) as bchfs:
-        dataset = BcachefsDataset(bchfs.cd(), channels,
-                transform=transforms.Compose([
-                    transforms.GaussianBlur(7, sigma=(0.1, 2.0)),
-                    transforms.RandomHorizontalFlip(0.5),
-                    transforms.RandomRotation([-180., +180.])
-                ]))
-    return dataset
+def get_bchfs(filename):
+    bchfs = Bcachefs(filename)
+    bchfs.open()
+    bchfs.close()
+    return bchfs
 
 
 def make_dataloader(args):
     # Data loading code
     # Dataset
     channels = random.sample(list(range(MAX_CHAN_CNT)), args.chan_cnt)
-    train_set = CachedFunction(get_dataset, args.data, channels)
+    with CachedFunction(get_bchfs, args.data) as bchfs:
+        train_set = BcachefsDataset(bchfs.cd(), channels,
+                transform=transforms.Compose([
+                    transforms.GaussianBlur(7, sigma=(0.1, 2.0)),
+                    transforms.RandomHorizontalFlip(0.5),
+                    transforms.RandomRotation([-180., +180.])
+                ]))
+        val_set = BcachefsDataset(bchfs.cd(), channels)
+    train_set = torch.utils.data.Subset(
+            train_set, range((MAX_FOLDS_CNT - 1) * MAX_PATIENTS_PER_FOLDS))
+    val_set = torch.utils.data.Subset(
+            val_set, range(len(train_set),
+                           MAX_FOLDS_CNT * MAX_PATIENTS_PER_FOLDS))
 
     # Dataloaders
     train_sampler = torch.utils.data.SequentialSampler \
@@ -136,8 +162,11 @@ def make_dataloader(args):
     train_loader = DataLoader(train_set, sampler=train_sampler(train_set),
                               batch_size=args.batch_size, num_workers=args.workers,
                               pin_memory=True)
+    val_loader = DataLoader(val_set, batch_size=args.batch_size,
+                            shuffle=False, num_workers=args.workers,
+                            pin_memory=True)
 
-    return train_loader
+    return train_loader, val_loader
 
 
 @TaskGenerator
