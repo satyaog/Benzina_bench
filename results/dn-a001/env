@@ -1,4 +1,4 @@
-# BENCH COMMIT HASH: 41009f6c09100fc0e5a086a4c46035ba62bd0829
+# BENCH COMMIT HASH: 80dc3ac723d82e2e761cdf99560210a103499fa0
 # BCACHEFS COMMIT HASH: bcachefs @ git+https://github.com/mila-iqia/bcachefs.git@f80c433d57f7c49fd4ee9c52eee38b38f1036618
 # MACHINE NAME: dn-a001
 # CPU: model name : AMD EPYC 7502 32-Core Processor
@@ -73,6 +73,7 @@ nbformat==5.0.7
 nest-asyncio==1.4.1
 ninja==1.10.2
 notebook==6.1.4
+numexpr==2.7.3
 numpy==1.21.1
 oauthlib==3.1.0
 packaging==20.4
@@ -113,6 +114,7 @@ simplejson==3.17.5
 six==1.14.0
 smmap==4.0.0
 SQLAlchemy==1.3.19
+tables==3.6.1
 terminado==0.9.1
 testpath==0.4.4
 toml==0.10.2
